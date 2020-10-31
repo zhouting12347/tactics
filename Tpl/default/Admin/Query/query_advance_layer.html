@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Uploading</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+  <style type="text/css">
+        tbody .layui-table-cell {
+            height: auto;
+            line-height: 40px;
+        }
+    </style>
+</head>
+<body>
+
+  <div class="layui-fluid">
+	<div class="layui-card">
+      <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+        <div class="layui-form-item">
+         
+         <div class="layui-inline" style="margin:0 5px 0 10px;">
+          Start date
+          </div>
+          <div class="layui-inline">
+            <div class="layui-input-inline">
+              <input type="text" class="layui-input" id="StartDate" placeholder="Select">
+            </div>
+          </div>
+          
+          <div class="layui-inline" style="margin:0 5px 0 10px;">
+          End date
+          </div>
+          <div class="layui-inline">
+            <div class="layui-input-inline">
+              <input type="text" class="layui-input" id="EndDate" placeholder="Select">
+            </div>
+          </div>
+          
+          <div class="layui-inline">
+            <button class="layui-btn layuiadmin-btn-admin layui-btn-normal" style="background-color:#0080C0;" id="search" >
+              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="layui-card-body">
+             <table class="layui-table" id="playerTable"  lay-filter="myTable"></table>
+       </div>
+
+    </div>
+  </div>
+
+ <script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+ <script src="__PUBLIC__/layui/layui.all.js"></script>
+<script>
+var P_ID="{$P_ID}";
+window.onload=function(){
+	 //日期范围
+    layui.laydate.render({
+      elem: '#StartDate'
+      ,type: 'date'
+      ,lang: 'en'
+    });
+
+    layui.laydate.render({
+      elem: '#EndDate'
+      ,type: 'date'
+      ,lang: 'en'
+    });
+
+    
+	var table=layui.table;
+	  table.render({
+	    elem: '#playerTable'
+	    ,url:'/index.php/Table/getTableData'
+	    ,even:true
+	    ,height:"full-140"
+		,limit:10
+	    ,limits:[5,20,50,100]
+	    ,id:'playerTable'
+	    ,where:{tableName:"player",tableType:"player_advance",P_ID:P_ID}
+	    ,cols: [[
+	           {field:'status',title: 'Status',templet:function(item){
+		   	    	  if(item.status==0){
+		   	    		  return "Ready to play";
+		   	    	  }else if(item.status==1){
+		   	    		  return "Playing";
+		   	    	  }
+		   	      }}
+	   	      ,{field:'startDate',title: 'Start date'}
+	   	      ,{field:'endDate',title: 'End date'}
+	   	      ,{field:'clipsCount',title: 'Used clips'}
+	    	  ,{field:'action', title: 'Details',width:140,align:'center', toolbar: '#tableBar'}
+	    ]]
+	    ,page: true
+	    ,done: function(res, curr, count){
+	      }
+	  });
+	
+	//用户工具条响应事件
+	layui.table.on('tool(myTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+		  var data = obj.data; //获得当前行数据
+		  var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+		  var tr = obj.tr; //获得当前行 tr 的DOM对象
+		  var id=data.P_ID;
+		  var status=data.status;
+		  var O_ID=data.O_ID;
+		  
+		  if(layEvent=="details"){ 
+			  layer.open({
+				    type: 2,
+				    anim:2,
+				    title:"Unit",
+				    content: '/index.php/Query/query_unit_layer?id='+id+"&status="+status+"&O_ID="+O_ID,
+				    area:screen() < 2 ? ['60%', '60%'] : ['1400px', '600px'],
+				});
+		  }
+	});
+	
+
+
+	//搜索按钮
+	$("#search").click(function(){
+		 var startDate=$("#StartDate").val();
+		 var endDate=$("#EndDate").val();
+		 layui.table.reload("playerTable",{where:
+		  	{keyword:keyword,selecttype:selecttype,selectarea:selectarea,enable:enable}
+		  });
+	});
+	
+}
+
+function screen() {
+    //获取当前窗口的宽度
+    var width = $(window).width();
+    if (width > 1200) {
+        return 3;   //大屏幕
+    } else if (width > 992) {
+        return 2;   //中屏幕
+    } else if (width > 768) {
+        return 1;   //小屏幕
+    } else {
+        return 0;   //超小屏幕
+    }
+}
+
+
+</script>
+<script type="text/html" id="tableBar">
+<div class="layui-btn-group">
+  <button class="layui-btn layui-btn-sm" data-type="Details" style="background-color:#0080C0;" title="Details" lay-event="details">
+    <i class="layui-icon">&#xe62d;</i>
+  </button>
+</div>
+</script>
+</body>
+</html>
+

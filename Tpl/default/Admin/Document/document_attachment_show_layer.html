@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>附件预览</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+</head>
+<body>
+  <div class="layui-fluid">
+	{$html}
+  </div><!-- layui-fluid -->
+  
+  <script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+  <script src="__PUBLIC__/layui/layui.all.js"></script>
+  <script src="__PUBLIC__/js/vds.js"></script> 
+  <script>
+  var format="{$format}";
+  var url="{$html}";
+  window.onload=function(){
+	if(format=="pdf"){
+		window.location.href=url;
+	}
+  }
+  </script>
+</body>
+</html>

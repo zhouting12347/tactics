@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>ClipType</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+</head>
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-card-body" style="padding:15px;border-bottom:1px solid #f6f6f6;">
+        <div>
+          <button class="layui-btn layui-btn-lg" data-type="Add" id="add" style="background-color:#00B000;">
+            <i class="layui-icon">&#xe61f;</i>添加节假日
+          </button>
+        </div>
+      </div>
+		
+	 <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+        <div class="layui-form-item">
+          <div class="layui-inline" style="margin:0 5px 0 10px;">
+          年月
+          </div>
+          <div class="layui-inline">
+            <div class="layui-input-inline">
+              <input class="layui-input" type="text" id="date" autocomplete="off" value="{$date}" >
+            </div>
+          </div>
+          <div class="layui-inline">
+            <button class="layui-btn layuiadmin-btn-admin layui-btn-normal" style="background-color:#0080C0;" id="search">
+              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+		
+      <div class="layui-card-body">
+            <table class="layui-table" id="holidayTable"  lay-filter="myTable"></table>
+      </div>
+    </div>
+  </div>
+
+ <script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+ <script src="__PUBLIC__/layui/layui.all.js"></script>
+ <script src="__PUBLIC__/js/vds.js"></script>
+<script>
+var date="{$date}";
+ window.onload=function(){
+	 layui.laydate.render({ 
+		  elem: '#date'
+		  ,type: 'month'
+	 });
+	 
+	 var table=layui.table;
+	  table.render({
+	    elem: '#holidayTable'
+	    ,url:'/index.php/Table/getTableData'
+	    ,even:true
+	    ,height:"full-220"
+		,limit:14
+	    ,limits:[14,30,50,100]
+	    ,id:'holidayTable'
+	    ,where:{tableName:"holiday",tableType:'holiday',date:date}
+	    ,cols: [[
+	       {type:'numbers',title:"序号"}
+	      ,{field:'h_date',title: '日期'}
+	   	  ,{field:'h_week',title: '星期'}
+	   	  ,{field:'h_remark',title: '备注'}
+	      ,{field:'action', title: '操作',width:110,align:'center', toolbar: '#tableBar'}
+	    ]]
+	    ,page: true
+	    ,done: function(res, curr, count){
+	      }
+	  });
+	
+	//用户工具条响应事件
+	layui.table.on('tool(myTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+		  var data = obj.data; //获得当前行数据
+		  var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+		  var tr = obj.tr; //获得当前行 tr 的DOM对象
+		  var date=data.h_date;
+		  if(layEvent=="edit"){
+			  layer.open({
+				    type: 2,
+				    anim:2,
+				    title:"编辑标签",
+				    content: '/index.php/Config/config_edit_tag_layer?id='+id,
+				    area:screen() < 2 ? ['60%', '60%'] : ['600px', '340px'],
+				    maxmin: true,
+				    end: function(){
+				    	//刷新holidayTable
+	     				layui.table.reload("holidayTable");
+				    }
+				});
+		  }else if(layEvent=="delete"){
+		    	 layer.confirm('确认删除?', {icon: 3, title:'提示'}, function(index){
+					  $.ajax({
+				            async: false,
+				            type: "GET",
+				            url:'/index.php/Arrange/arrange_del_holiday_handler?date='+date,
+				            dataType: "json",
+				            success: function(msg){
+				            		layer.msg(msg.info);
+				            		if(msg.status==1){
+				            			//刷新holidayTable
+				            			layui.table.reload("holidayTable");
+				            		}
+				              },
+				            error: function(){
+				            	layer.msg("error");
+				            }
+				        });
+					  layer.close(index);
+					});
+		  }
+	});
+	
+	//新增页
+	$("#add").click(function(){
+		layer.open({
+	          title:'新增节假日'
+	          ,type: 2
+	          ,content: '/index.php/Arrange/arrange_add_holiday_layer'
+	          ,shadeClose: false
+	          ,area:screen() < 2 ? ['60%', '60%'] : ['600px', '400px']
+	          ,maxmin: true
+	          ,cancel: function(index, layero){ 
+	        	  layui.table.reload("holidayTable");
+	        	 }    
+	        });
+	});
+	
+	//搜索按钮
+	$("#search").click(function(){
+		 var date=$("#date").val();
+		 layui.table.reload("holidayTable",{where:
+		  	{date:date}
+		  });
+	});
+
+ }
+</script>
+<script type="text/html" id="tableBar">
+<div class="layui-btn-group">
+    <button class="layui-btn layui-btn-sm" style="background-color:#FF0000;" title="Delete" lay-event="delete">
+      <i class="layui-icon">&#xe640;</i>
+    </button>
+</div>
+</script>
+</body>
+</html>
+

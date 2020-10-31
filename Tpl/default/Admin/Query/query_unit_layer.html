@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Upload</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+  <style type="text/css">
+	tbody .layui-table-cell{
+		height:90px;
+		line-height: 90px;
+	}
+</style>
+</head>
+<body>
+
+  <div class="layui-fluid">
+	<div class="layui-card">
+      <div class="layui-card-body">
+             <table class="layui-table" id="clipsTable"  lay-filter="myTable"></table>
+       </div>
+    </div>
+  </div>
+
+ <script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+ <script src="__PUBLIC__/layui/layui.all.js"></script>
+ <script src="__PUBLIC__/js/vds.js"></script>
+<script>
+window.onload=function(){
+	var table=layui.table;
+	  table.render({
+	    elem: '#clipsTable'
+	   // ,url:'/index.php/Table/getTableData'
+	    ,even:true
+	    ,height:"full-60"
+		,limit:10
+	    ,limits:[10,20,50,100]
+	   ,data:{$clips}
+	    ,cols: [[
+	           {field:'C_Thumbnail',title: 'Thumbnail',templet:"#C_Thumbnail",width:160}
+	   	      ,{field:'C_Title',title: 'Name'}
+	   	      ,{field:'O_StartDate',title: 'Start date'}
+	   	      ,{field:'O_EndDate',title: 'End date'}
+	     	  ,{field:'C_Duration',title: 'Duration'}
+	     	  ,{field:'type',title: 'Type'}
+	     	  ,{field:'O_PlayType',title: 'Play type',templet:function(item){
+	     		 if(item.O_PlayType==0){
+	   	    		  return "Rotation";
+	   	    	  }else if(item.O_PlayType==1){
+	   	    		  return "On hour";
+	   	    	  }else if(item.O_PlayType==2){
+	   	    		  return "On half hour";
+	   	    	  }else if(item.O_PlayType==3){
+	   	    		  return "On hour+half";
+	   	    	  }else if(item.O_PlayType==4){
+	   	    		  return "Scheduled";
+	   	    	  }else if(item.O_PlayType==5){
+	   	    		  return "Specific point";
+	   	    	  }
+		   		  }}
+	     	  ,{field:'O_FixedTime',title: 'Timer'}
+	     	  ,{field:'O_OnceDateTime',title: 'Once timer date'}
+	    ]]
+	    ,page: true
+	    ,done: function(res, curr, count){
+	      }
+	  });
+}
+
+</script>
+<script type="text/html" id="C_Thumbnail">
+<video src="" poster="{{d.imgurl}}" width="100%" height="100%"></video>
+<i class="layui-icon layui-icon-play" style="position:absolute;left:60px;color:#B6B6B6;font-size:40px;cursor:pointer" id="{{d.C_ID}}" onclick="videoLayer(this)"></i>
+</script>
+</body>
+</html>
+

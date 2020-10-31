@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>ClipType</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+</head>
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-card-body" style="padding:15px;border-bottom:1px solid #f6f6f6;">
+        <div>
+          <button class="layui-btn layui-btn-lg" data-type="Add" id="add" style="background-color:#00B000;">
+            <i class="layui-icon">&#xe61f;</i>Add
+          </button>
+        </div>
+      </div>
+
+      <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+        <div class="layui-form-item">
+          <div class="layui-inline">
+            <input type="text" id="keyword" placeholder="Keyword" autocomplete="off" class="layui-input">
+          </div>
+          
+          <div class="layui-inline">
+              <label class="layui-form-label">Salesman</label>
+              <div class="layui-input-block">
+                <select name="C_SalesID"  id="C_SalesID">
+                  <option value="">Select</option>
+                  <volist name="user" id="vo">
+	              	<option value="{$vo.U_ID}">{$vo.U_Username}</option>
+	              </volist>
+                </select>
+              </div>
+            </div>
+          
+          <div class="layui-inline">
+            <button class="layui-btn layuiadmin-btn-admin layui-btn-normal" style="background-color:#0080C0;" id="search">
+              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="layui-card-body">
+            <table class="layui-table" id="customerTable"  lay-filter="myTable"></table>
+      </div>
+    </div>
+  </div>
+
+ <script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+ <script src="__PUBLIC__/layui/layui.all.js"></script>
+ <script src="__PUBLIC__/js/vds.js"></script>
+<script>
+ window.onload=function(){
+	 var table=layui.table;
+	  table.render({
+	    elem: '#customerTable'
+	    ,url:'/index.php/Table/getTableData'
+	    //,even:true
+	    ,height:"full-220"
+		,limit:10
+	    ,limits:[10,20,50,100]
+	    ,id:'customerTable'
+	    ,where:{tableName:"customers",tableType:"customer"}
+	    ,cols: [[
+	   	   {field:'C_Contact',title: 'Contact'}
+	      ,{field:'C_Company',title: 'Company'}
+	   	  ,{field:'C_Mobile',title: 'Mobile'}
+	   	  ,{field:'C_RegTime',title: 'Regist time'}
+	   	  ,{field:'C_Email',title: 'Email'}
+	   	  ,{field:'U_Username',title: 'Sales'}
+	   	  ,{field:'C_Enabled',title: 'Status',templet:function(item){
+	    	  if(item.C_Enabled==1){
+	    		  return "Enabled";
+	    	  }else if(item.C_Enabled==0){
+	    		  return "Disabled";
+	    	  }
+	      }}
+	      ,{field:'action', title: 'option',width:300,align:'center', toolbar: '#tableBar'}
+	    ]]
+	    ,page: true
+	    ,done: function(res, curr, count){
+	      }
+	  });
+	
+	//用户工具条响应事件
+	layui.table.on('tool(myTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+		  var data = obj.data; //获得当前行数据
+		  var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+		  var tr = obj.tr; //获得当前行 tr 的DOM对象
+		  var id=data.C_ID;
+		  var c_name=data.C_Contact;
+		  if(layEvent=="edit"){
+			  layer.open({
+				    type: 2,
+				    anim:2,
+				    title:"Change",
+				    content: '/index.php/Customer/customer_edit_customer_layer?id='+id,
+				    area:screen() < 2 ? ['60%', '60%'] : ['600px', '460px'],
+				    maxmin: true,
+				    end: function(){
+				    	//刷新customerTable
+	     				layui.table.reload("customerTable");
+				    }
+				});
+		  }else if(layEvent=="delete"){
+		    	 layer.confirm('confirm delete?', {icon: 3, title:'tip',btn: ['confirm', 'cancel']}, function(index){
+					  $.ajax({
+				            async: false,
+				            type: "GET",
+				            url:'/index.php/Customer/customer_del_customer_handler?id='+id,
+				            dataType: "json",
+				            success: function(msg){
+				            		layer.msg(msg.info);
+				            		if(msg.status==1){
+				            			//刷新customerTable
+				            			layui.table.reload("customerTable");
+				            		}
+				              },
+				            error: function(){
+				            	layer.msg("error");
+				            }
+				        });
+					  layer.close(index);
+					});
+		  }else if(layEvent=="search"){
+			  layer.open({
+				    type: 2,
+				    anim:2,
+				    title:"Order search",
+				    maxmin: true,
+				    content: '/index.php/Customer/customer_search_order_layer?id='+id,
+				    area:screen() < 2 ? ['60%', '60%'] : ['1600px', '800px'],
+				});
+		  }else if(layEvent=="order"){
+			  layer.open({
+				    type: 2,
+				    anim:2,
+				    title:"Add",
+				    maxmin: true,
+				    content: '/index.php/Customer/customer_add_order_layer?id='+id+'&name='+c_name,
+				    area:screen() < 2 ? ['60%', '60%'] : ['1600px', '800px'],
+				});
+		  }
+	});
+	
+	//新增customer页
+	$("#add").click(function(){
+		layer.open({
+	          title:'Add'
+	          ,type:2
+	          ,content: '/index.php/Customer/customer_add_customer_layer'
+	          ,shadeClose: false
+	          ,area:screen() < 2 ? ['60%', '60%'] : ['600px', '460px']
+	          ,maxmin: true
+	          ,cancel: function(index, layero){ 
+	        	  layui.table.reload("customerTable");
+	        	 }    
+	        });
+	});
+
+	//搜索按钮
+	$("#search").click(function(){
+		 var keyword=$("#keyword").val();
+		 var salesID=$("#C_SalesID").val();
+		 layui.table.reload("customerTable",{where:
+		  	{keyword:keyword,salesID:salesID}
+		  });
+	});
+	
+ }
+</script>
+<script type="text/html" id="tableBar">
+<div class="layui-btn-group">
+    <button class="layui-btn layui-btn-sm" data-type="edit" style="margin:10;background-color:#0080C0;" title="change" lay-event="edit">
+      <i class="layui-icon">&#xe642;</i>
+    </button>
+ <button class="layui-btn layui-btn-sm" data-type="OrderSearch" style="margin:10;background-color:#DD006F;" title="Order Search" lay-event="search">
+   <i class="layui-icon">&#xe615;</i>
+ </button>
+ <button class="layui-btn layui-btn-sm" data-type="AddOrder" style="margin:10;background-color:#00B000;" title="Add Order" lay-event="order">
+    <i class="layui-icon">&#xe63c;</i>
+  </button>
+    <button class="layui-btn layui-btn-sm" style="margin:10;background-color:#FF0000;" title="Delete" lay-event="delete">
+      <i class="layui-icon">&#xe640;</i>
+    </button>
+</div>
+</script>
+</body>
+</html>
+

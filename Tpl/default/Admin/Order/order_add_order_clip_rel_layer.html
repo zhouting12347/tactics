@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>PlayersInfo</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/uploadTable.css" media="all">
+</head>
+<body>
+  <div class="layui-fluid">
+    <div class="layui-card">
+    
+      <div class="layui-form layui-card-header layuiadmin-card-header-auto" style="padding-bottom:0;">
+        <div class="layui-form-item">
+          <div class="layui-inline">
+            <input type="text" id="keyword" placeholder="Keyword" autocomplete="off" class="layui-input">
+          </div>
+           <div class="layui-inline" style="margin:0 5px 0 10px;">
+          Video type
+          </div>
+          <div class="layui-inline">
+            <select id="selecttype" lay-verify="">
+              <option value="">Select</option>
+              <volist name="cliptype" id="vo">
+              	<option value="{$vo.CT_ID}">{$vo.CT_Name}</option>
+              </volist>
+            </select>
+          </div>
+          <div class="layui-inline">
+            <button class="layui-btn layuiadmin-btn-admin layui-btn-normal" style="background-color:#0080C0;" id="search">
+              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="layui-card-body">
+        <table class="layui-table" id="clipsTable"  lay-filter="myTable"></table>
+      </div>
+      
+	  <div class="layui-form-item layui-layout-admin" style="margin-bottom:0;">
+        <div class="layui-input-block">
+          <div class="layui-footer" style="left: 0;">
+            <button type="button" class="layui-btn" lay-submit="" id="submit">Submit</button>
+          </div>
+        </div>
+      </div>
+      
+    </div><!-- layui-card -->
+  </div><!-- layui-fluid -->
+  
+<script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+<script src="__PUBLIC__/layui/layui.all.js"></script>
+<script src="__PUBLIC__/js/vds.js"></script>
+<script>
+var orderID="{$orderID}";
+window.onload=function(){
+	var table=layui.table;
+	  table.render({
+	    elem: '#clipsTable'
+	    ,url:'/index.php/Table/getTableData'
+	    ,even:true
+	    ,height:"full-200"
+		,limit:5
+	    ,limits:[5,20,50,100]
+	    ,id:'clipsTable'
+	    ,where:{tableName:"clips",tableType:"clips_audited",DP:"no"}
+	    ,cols: [[
+	           {type:'checkbox'}  
+	          ,{field:'C_Thumbnail',title: 'Thumbnail',templet:"#C_Thumbnail",width:160}
+	 	      ,{field:'C_Title',title: 'Name'}
+	 	      ,{field:'C_Duration',title: 'Duration'}
+	 	      ,{field:'CT_Name',title:'Video type'}
+	    ]]
+	    ,page: true
+	    ,done: function(res, curr, count){
+	      }
+	  });
+	  
+	 //搜索按钮
+	$("#search").click(function(){
+		 var keyword=$("#keyword").val();
+		 var selecttype=$("#selecttype").val();
+		 layui.table.reload("clipsTable",{where:
+		  	{keyword:keyword,selecttype:selecttype}
+		 });
+	});
+	 
+	//提交按钮 ，保存clips
+	$("#submit").click(function(){
+		var checkStatus=table.checkStatus('clipsTable');
+		if(checkStatus.data.length<1){
+			layer.msg("Please select video");
+			return false;
+		}
+		  $.ajax({
+	            async: false,
+	            type: "POST",
+	            url:'/index.php/Order/order_add_order_clip_rel_handler?id='+orderID,
+	            data:checkStatus,
+	            dataType: "json",
+	            success: function(msg){
+	            		layer.msg(msg.info);
+	              },
+	            error: function(){
+	            	layer.msg("error");
+	            }
+	        });
+	});
+
+}	  
+
+</script>
+<script type="text/html" id="C_Thumbnail">
+<video src="" poster="{{d.imgurl}}" width="100%" height="100%"></video>
+<i class="layui-icon layui-icon-play" style="position:absolute;left:60px;top:30px;color:#B6B6B6;font-size:40px;cursor:pointer" id="{{d.C_ID}}" onclick="videoLayer(this)"></i>
+</script>
+</body>
+</html>

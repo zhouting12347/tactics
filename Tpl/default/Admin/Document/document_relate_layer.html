@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>供稿人待办</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+  <style type="text/css">
+		body{overflow-y: scroll;}
+  </style>
+</head>
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+        <div class="layui-form-item">
+          <div class="layui-inline">
+            <input type="text" id="keyword" placeholder="搜索..." autocomplete="off" class="layui-input">
+          </div>
+          <div class="layui-inline" style="margin:0 5px 0 10px;">
+          日期范围
+          </div>
+          <div class="layui-inline">
+            <div class="layui-input-inline">
+              <input type="text" class="layui-input" id="createtime" placeholder="请选择日期范围">
+            </div>
+          </div>
+          <div class="layui-inline">
+            <button class="layui-btn layuiadmin-btn-admin layui-btn-normal" style="background-color:#0080C0;" id="search">
+              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+        
+       <!-- <div class="layui-card-body layui-card-header">
+        <button type="button" class="layui-btn layui-btn-radius">直播稿</button>
+        <button type="button" class="layui-btn layui-btn-radius" style="background-color:#FB7D00;">微博</button>
+        <button type="button" class="layui-btn layui-btn-radius" style="background-color:#0072A8;">通发稿</button>
+        <button type="button" class="layui-btn layui-btn-radius layui-btn-primary">其他</button>
+      </div> -->
+        
+      <div class="layui-card-body">
+	      <fieldset class="layui-elem-field layui-field-title site-title">
+	      	<legend><a name="quickstart">已关联的稿件</a></legend>
+	      </fieldset>
+      	<table class="layui-table" id="related" lay-filter="relatedTable"></table>
+		
+		<fieldset class="layui-elem-field layui-field-title site-title">
+	      	<legend><a name="quickstart">稿件列表</a></legend>
+	      </fieldset>
+         <table class="layui-table" id="documentTable"  lay-filter="myTable"></table>
+       </div>
+
+    </div>
+  </div>
+
+ <script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+ <script src="__PUBLIC__/layui/layui.all.js"></script>
+  <script src="__PUBLIC__/js/vds.js"></script>
+<script>
+var w_id="{$w_id}";
+window.onload=function(){
+    //日期范围
+    layui.laydate.render({
+      elem: '#createtime'
+      ,range:true
+    });
+    
+    //媒体库table，只看见自己创建的稿件
+	var table=layui.table;
+	  table.render({
+	    elem: '#documentTable'
+	    ,url:'/index.php/Table/getTableData'
+	    //,even:true
+	    ,height:"full-315"
+		,limit:10
+	    ,limits:[10,30,50,100]
+	    ,id:'documentTable'
+	    ,where:{tableName:"document",tableType:"auditDocument"}
+	    ,cols: [[
+			  {type: 'numbers', title: '序号'}
+	          ,{field:'d_title',width:200,title: '标题'}
+	          ,{field:'d_content',title: '稿件内容'}
+	          ,{field:'action', title: '操作',width:300,align:'center',fixed: 'right',toolbar: '#tableBar'}
+	    ]]
+	    ,page: true
+	    ,done: function(res, curr, count){
+	      }
+	  });
+	  
+	  //微博已关联的稿件列表
+	  table.render({
+		    elem: '#related'
+		    ,url:'/index.php/Table/getTableData'
+		    ,id:'related'
+		    ,where:{tableName:"document",tableType:"documentRelated",w_id:w_id}
+		    ,cols: [[
+				  {type: 'numbers', title: '序号'}
+		          ,{field:'d_title',width:200,title: '标题'}
+		          ,{field:'d_content',title: '稿件内容'}
+		          ,{field:'action', title: '操作',width:300,align:'center',fixed: 'right',toolbar: '#tableBar2'}
+		    ]]
+		    ,done: function(res, curr, count){
+		      }
+		  });
+	  
+	  //监听单元格事件
+	  table.on('tool(myTable)', function(obj){
+		var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+	    var data = obj.data;
+	    var d_id=data.d_id;
+	    if(layEvent === 'relate'){
+	    	$.ajax({
+				url: '/index.php/Document/document_relate_handler',
+				type: 'post',
+				dataType:'json',
+				data:"w_id="+w_id+"&d_id="+d_id,
+				success: function(msg){
+					if(msg.status==1){
+						layui.table.reload("related");
+						layer.msg(msg.info);
+					}else{
+						layer.msg(msg.info);
+					}
+				},
+				error:function(){
+					layer.msg("发送错误");
+				}
+			});
+	    }
+	  });
+	  
+	  //监听单元格事件
+	  table.on('tool(relatedTable)', function(obj){
+		var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+	    var data = obj.data;
+	    var d_id=data.d_id;
+	    if(layEvent === 'delete'){
+	    	$.ajax({
+				url: '/index.php/Document/document_del_relate_handler',
+				type: 'post',
+				dataType:'json',
+				data:"w_id="+w_id+"&d_id="+d_id,
+				success: function(msg){
+					if(msg.status==1){
+						layui.table.reload("related");
+						layer.msg("操作成功");
+					}else{
+						layer.msg("操作失败");
+					}
+				},
+				error:function(){
+					layer.msg("发送错误");
+				}
+			});
+	    }
+	  });
+    
+	//搜索按钮
+	$("#search").click(function(){
+		 var keyword=$("#keyword").val();
+		 var createtime=$("#createtime").val();
+		 layui.table.reload("documentTable",{
+			 where:{
+				keyword:keyword,createtime:createtime
+			}
+		    ,page: {
+	    	   curr: 1  ////重新从第 1 页开始
+	    	}
+		  });
+	});
+}
+</script>
+<script type="text/html" id="tableBar">
+<div>
+    <button class="layui-btn layui-btn-sm" data-type="edit" style="margin:10;background-color:#0080C0;" title="关联"  lay-event="relate">关联
+   </button>
+</div>
+</script>
+<script type="text/html" id="tableBar2">
+<div>
+    <button class="layui-btn layui-btn-sm layui-btn-danger" data-type="edit" style="margin:10;" title="删除"  lay-event="delete">删除
+   </button>
+</div>
+</script>
+</body>
+</html>
+

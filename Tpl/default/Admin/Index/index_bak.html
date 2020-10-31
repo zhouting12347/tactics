@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>VDS2.0</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+</head>
+<body class="layui-layout-body">
+  <div id="LAY_app">
+    <div class="layui-layout layui-layout-admin">
+      <div class="layui-header" style="background-color:#20222a">
+        <!-- 头部区域 -->
+        <ul class="layui-nav layui-layout-left">
+          <li class="layui-nav-item layadmin-flexible" lay-unselect>
+            <a href="javascript:;" layadmin-event="flexible" title="Side slip">
+              <i class="layui-icon layui-icon-shrink-right" id="LAY_app_flexible" style="color:#EBEBEB"></i>
+            </a>
+          </li>
+          <li class="layui-nav-item">
+            <a href="#" title="Logo">
+              <img src="__PUBLIC__/layui/images/Logo.png" alt="">
+            </a>
+          </li>
+        </ul>
+        <ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right" style="margin-right:20px;">
+          <li class="layui-nav-item layui-hide-xs" lay-unselect>
+            <a href="javascript:;" layadmin-event="fullscreen" style="padding:0" title="Fullscreen">
+              <i class="layui-icon layui-icon-screen-full" style="color:#EBEBEB"></i>
+            </a>
+          </li>
+          <li class="layui-nav-item" lay-unselect>
+            <a href="javascript:;">
+              <img src="__PUBLIC__/layui/images/player.png" class="layui-nav-img">
+              <cite style="color:#EBEBEB">Welcome, {$Think.session.username}</cite>
+            </a>
+            <dl class="layui-nav-child">
+              <dd style="text-align: center;"><a href="#" onclick="changePassword()">Change Password</a></dd>
+              <dd style="text-align: center;"><a href="__GROUP__/PUBLIC/logout">Logout</a></dd>
+            </dl>
+          </li>
+        </ul>
+      </div>
+      <!-- 侧边菜单 -->
+      <div class="layui-side layui-side-menu"> 
+        <div class="layui-side-scroll" id="menu">
+          <div class="layui-logo">
+            <span>WELCOME</span>
+          </div>
+          <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
+            <li class="layui-nav-item layui-nav-itemed">
+              <a href="javascript:;" lay-tips="LIBRARY">
+                <i class="layui-icon layui-icon-component"></i>
+                <cite>VIDEO</cite>
+              </a>
+              <dl class="layui-nav-child">
+                <dd class="layui-this">
+                  <a lay-href="__GROUP__/Clips/clips_uploading_table">Upload</a>
+                </dd>
+                <dd>
+                  <a lay-href="__GROUP__/Clips/clips_auditing_table">Verify</a>
+                </dd>
+                <dd>
+                  <a lay-href="__GROUP__/Clips/clips_audited_table">Library</a>
+                </dd>
+              </dl>
+            </li>
+            <li class="layui-nav-item">
+              <a href="javascript:;" lay-tips="PLAYER">
+                <i class="layui-icon layui-icon-username"></i>
+                <cite>PLAYER</cite>
+              </a>
+              <dl class="layui-nav-child">
+                <dd>
+                  <a lay-href="__GROUP__/Player/player_player_table">Player</a>
+                </dd>
+              </dl>
+            </li>
+            <li class="layui-nav-item">
+              <a href="javascript:;" lay-tips="ORDER">
+                <i class="layui-icon layui-icon-file-b"></i>
+                <cite>ORDER</cite>
+              </a>
+              <dl class="layui-nav-child">
+                <dd>
+                  <a lay-href="__GROUP__/Order/order_editing_table">Input</a>
+                </dd>
+                <dd>
+                  <a lay-href="__GROUP__/Order/order_auditing_table">Approve</a>
+                </dd>
+                <dd>
+                  <a lay-href="__GROUP__/Order/order_audited_table">Contract</a>
+                </dd>
+              </dl>
+            </li>
+            <li class="layui-nav-item">
+              <a href="javascript:;" lay-tips="CUSTOMER">
+                <i class="layui-icon layui-icon-user"></i>
+                <cite>CUSTOMER</cite>
+              </a>
+              <dl class="layui-nav-child">
+                <dd>
+                  <a lay-href="__GROUP__/Customer/customer_customer_table">Customer</a>
+                </dd>
+              </dl>
+            </li>
+            <li class="layui-nav-item">
+              <a href="javascript:;" lay-tips="QUERY&STATISTICS">
+                <i class="layui-icon layui-icon-search"></i>
+                <cite>SEARCH</cite>
+              </a>
+              <dl class="layui-nav-child">
+                <dd>
+                  <a lay-href="__GROUP__/Query/query_clip_table">Content</a>
+                </dd>
+                <dd>
+                  <a lay-href="__GROUP__/Query/query_player_table">Player</a>
+                </dd>
+                <dd>
+                  <a lay-href="__GROUP__/Query/query_order_table">Contract playlist</a>
+                </dd>
+              </dl>
+            </li>
+            <li class="layui-nav-item">
+              <a href="javascript:;" lay-tips="SYSTEM">
+                <i class="layui-icon layui-icon-set"></i>
+                <cite>CONFIGURATION</cite>
+              </a>
+              <dl class="layui-nav-child">
+              
+                <if condition="$username eq 'admin'">
+	                <dd>
+	                  <a lay-href="__GROUP__/System/system_company_table">Agent</a>
+	                </dd>
+                </if>
+                
+                <dd>
+                  <a lay-href="__GROUP__/RBAC/rbac_user_table">User</a>
+                </dd>
+                <dd>
+                  <a lay-href="__GROUP__/RBAC/rbac_role_table">Role</a>
+                </dd>
+                
+                <if condition="$username eq 'admin'">
+	                <dd>
+	                  <a lay-href="__GROUP__/System/system_configuration_page">Settings</a>
+	                </dd>
+                </if>
+                
+                  <if condition="$username eq 'admin'">
+	                <dd>
+	                  <a lay-href="__GROUP__/System/system_player_mac_table">Player authorization</a>
+	                </dd>
+                </if>
+                
+              </dl>
+            </li>
+            <li class="layui-nav-item">
+              <a href="javascript:;" lay-tips="QUERY&STATISTICS">
+                <i class="layui-icon layui-icon-set"></i>
+                <cite>CLASSIFICATION</cite>
+              </a>
+              <dl class="layui-nav-child">
+                <dd>
+                  <a lay-href="__GROUP__/Config/config_clip_type_table">Video</a>
+                </dd>
+                <dd>
+                  <a lay-href="__GROUP__/Config/config_player_type_table">Premises</a>
+                </dd>
+                <dd>
+                  <a lay-href="__GROUP__/Config/config_area_table">Area</a>
+                </dd>
+              </dl>
+            </li>
+            
+            
+          </ul>
+        </div>
+      </div>
+
+      <!-- 页面标签 -->
+<!--       <div class="layadmin-pagetabs" id="LAY_app_tabs">
+        <div class="layui-icon layadmin-tabs-control layui-icon-prev" layadmin-event="leftPage"></div>
+        <div class="layui-icon layadmin-tabs-control layui-icon-next" layadmin-event="rightPage"></div>
+        <div class="layui-icon layadmin-tabs-control layui-icon-down">
+          <ul class="layui-nav layadmin-tabs-select" lay-filter="layadmin-pagetabs-nav">
+            <li class="layui-nav-item" lay-unselect>
+              <a href="javascript:;"></a>
+              <dl class="layui-nav-child layui-anim-fadein">
+                <dd layadmin-event="closeThisTabs"><a href="javascript:;">Close current tab</a></dd>
+                <dd layadmin-event="closeOtherTabs"><a href="javascript:;">Close other tabs</a></dd>
+                <dd layadmin-event="closeAllTabs"><a href="javascript:;">Close all tabs</a></dd>
+              </dl>
+            </li>
+          </ul>
+        </div>
+        <div class="layui-tab" lay-unauto lay-allowClose="true" lay-filter="layadmin-layout-tabs">
+          <ul class="layui-tab-title" id="LAY_app_tabsheader">
+            <li lay-id="LIBRARY/Uploading.html" lay-attr="LIBRARY/Uploading.html" class="layui-this"><i class="layui-icon layui-icon-home"></i></li>
+          </ul>
+        </div>
+      </div> -->
+      
+      
+      <!-- 主体内容 -->
+      <div class="layui-body" id="LAY_app_body" style="top:50px;">
+        <div class="layadmin-tabsbody-item layui-show">
+          <iframe src="__GROUP__/Clips/clips_uploading_table" frameborder="0" class="layadmin-iframe" id="myIframe"></iframe>
+        </div>
+      </div>
+      
+      <!-- 辅助元素，一般用于移动设备下遮罩 -->
+      <div class="layadmin-body-shade" layadmin-event="shade"></div>
+    </div>
+  </div>
+  
+<script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+<script src="__PUBLIC__/layui/layui.js"></script>
+<script>
+window.onload=function(){
+	  layui.config({
+	    base: '__PUBLIC__/' //静态资源所在路径
+	  }).extend({
+	    index: 'lib/index' //主入口模块
+	  }).use('index');
+		  
+		//菜单点击事件
+		$("#menu").delegate("a","click",function(){
+			var url=$(this).attr("lay-href");
+			url?$("#myIframe").attr("src",url):false;
+		});
+}
+
+function changePassword(){
+	$("#myIframe").attr("src","__GROUP__/System/changePassword");
+}
+</script>
+</body>
+</html>
+
+

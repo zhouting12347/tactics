@@ -1,0 +1,215 @@
+   <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>ab 7000_000007</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+  <style type="text/css">
+		body{overflow-y: scroll;}
+  </style>
+</head>
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+        <div class="layui-form-item">
+
+		<!--
+          <div class="layui-inline">
+            <input type="text" id="keyword" placeholder="搜索..." autocomplete="off" class="layui-input">
+          </div>
+        -->
+          <div class="layui-inline" style="margin:0 5px 0 10px;">
+			OPDateTime
+          </div>
+          <div class="layui-inline">
+            <div class="layui-input-inline">
+              <input type="text" class="layui-input" id="AlarmDate" placeholder="请选择日期范围" autocomplete="off" >
+            </div>
+          </div>
+          <div class="layui-inline">
+            <button class="layui-btn layuiadmin-btn-admin layui-btn-normal" style="background-color:#0080C0;" id="search">
+              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+            </button>
+		  </div>
+		  <div class="layui-inline">
+			<button class="layui-btn" data-type="Add" style="background-color:#00B000;"  id="add">
+				新建
+			</button>
+			</div>
+        </div>
+      </div>
+        
+       <!-- <div class="layui-card-body layui-card-header">
+       	<button type="button" class="layui-btn layui-btn-radius" style="background-color:#DD006F;">素材库</button>
+        <button type="button" class="layui-btn layui-btn-radius">直播稿</button>
+        <button type="button" class="layui-btn layui-btn-radius" style="background-color:#FB7D00;">微博</button>
+        <button type="button" class="layui-btn layui-btn-radius" style="background-color:#0072A8;">统发稿</button>
+        <button type="button" class="layui-btn layui-btn-radius layui-btn-primary">其他</button>
+      </div> -->
+        
+      <div class="layui-card-body">
+         <table class="layui-table" id="ab7Table"  lay-filter="myTable"></table>
+       </div>
+
+    </div>
+  </div>
+
+ <script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+ <script src="__PUBLIC__/layui/layui.all.js"></script>
+  <script src="__PUBLIC__/js/vds.js"></script>
+<script>
+window.onload=function(){
+    //日期范围
+    layui.laydate.render({
+      elem: '#AlarmDate',
+	  type:'date',
+	  range: true
+    });
+    
+    //媒体库table，只看见自己创建的稿件
+	var table=layui.table;
+	  table.render({
+	    elem: '#ab7Table'
+	    ,url:'/index.php/Table/getTableData'
+	    //,even:true
+	    ,height:"full-135"
+		,limit:10
+	    ,limits:[20,30,50,100]
+	    ,id:'ab7Table'
+	    ,where:{tableName:"ab_7",tableType:"ab_7"}
+	    ,cols: [[
+			   {type: 'numbers', title: '序号'}
+			   ,{field:'OPDateTime',title: 'OPDateTime'}
+			   ,{field:'ApplyFor',title: 'ApplyFor'}
+			   ,{field:'DutyPhone',title: 'DutyPhone'}
+			   ,{field:'AffectStation',title: 'AffectStation'}
+			  ,{field:'DutyMan',title: 'DutyMan'}
+	   	  	  ,{field:'Emergency',title:'Emergency'}
+			  ,{field:'AffectAbout',title:'AffectAbout'}
+			  ,{field:'AskDate',title:'AskDate'}
+			  ,{field:'OPDetail',title:'OPDetail'}
+			  ,{field:'AffectRange',title:'AffectRange'}
+			  ,{field:'Department',title:'Department'}
+
+
+			
+	    	  ,{field:'action', title: '操作',width:160,align:'center',fixed: 'right',toolbar: '#tableBar'}
+	    ]]
+	    ,page: true
+	    ,done: function(res, curr, count){
+	      }
+	  });
+	  
+	  //监听单元格事件
+	  table.on('tool(myTable)', function(obj){
+		var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+	    var data = obj.data;
+	    var ab_id=data.ab_id;
+	 	var content;
+	    if(layEvent === 'delete'){	
+	    	 layer.confirm('确认删除？',{icon: 3, title:'提示'},function(index){
+				  $.ajax({
+			            type: "POST",
+			            url:'/index.php/Index/ab7_del_handler?ab_id='+ab_id,
+			            dataType: "json",
+			            success: function(msg){
+			            	layer.msg(msg.info);
+			            	layui.table.reload("ab7Table");
+			            },
+			            error: function(){
+			            	layer.msg("发送错误");
+			            }
+			        });
+				  layer.close(index);
+				});
+	    
+	    	
+	    }else if(layEvent === 'edit'){
+	    	layer.open({
+		          title:'编辑ab 7000_000007'
+		          ,type: 2
+		          ,content:'/index.php/Index/ab7_edit_layer?ab_id='+ab_id
+		          ,shadeClose: false
+		          ,area:['1500px', '750px']
+		          ,cancel: function(index, layero){ 
+		        	  layui.table.reload("ab7Table");
+		        	 }    
+		        });
+	    }else if(layEvent === 'submit'){
+			layer.confirm('确认发送？',{icon: 3, title:'提示'},function(index){
+				  $.ajax({
+			            type: "POST",
+			            url:'/index.php/Ab/ab7_submit?ab_id='+ab_id,
+			            dataType: "json",
+			            success: function(msg){
+			            	layer.msg(msg.info);
+			            	layui.table.reload("ab7Table");
+			            },
+			            error: function(){
+			            	layer.msg(msg.info);
+			            }
+			        });
+				  layer.close(index);
+				});
+	    
+		}
+
+	  });
+    
+	//搜索按钮
+		$("#search").click(function(){
+			
+			 var keyword=$("#keyword").val();
+			 var createtime=$("#AlarmDate").val();
+			 var classify=$("#classify").val();
+			 layui.table.reload("ab7Table",{
+				 where:{
+					keyword:keyword,createtime:createtime,classify:classify
+				}
+			    ,page: {
+		    	   curr: 1  ////重新从第 1 页开始
+		    	}
+			  });
+		});
+
+	//新建页面
+	$("#add").click(function(){
+		layer.open({
+	          title:'新建ab 7000_000007'
+	          ,type: 2
+	          ,content: '/index.php/Index/ab7_add_layer'
+	          ,shadeClose: false
+	          ,area: ['1500px', '750px']
+	          ,cancel: function(index, layero){ 
+	        	  layui.table.reload("ab7Table");
+	        	 }    
+	        });
+	});
+}
+</script>
+<script type="text/html" id="tableBar">
+	
+<div>
+	<button class="layui-btn layui-btn-sm" data-type="edit" style="margin:10;background-color:#0080C0;" title="编辑"  lay-event="edit">
+		<i class="layui-icon">&#xe642;</i>
+	</button>
+    <button class="layui-btn layui-btn-sm" style="margin:10;background-color:#FF0000;" title="删除"  lay-event="delete">
+		<i class="layui-icon">&#xe640;</i>
+	</button>
+
+	{{#  if(d.Status==0){ }}
+	<button class="layui-btn layui-btn-sm" style="margin:10;background-color:#00B000;" title="提交"  lay-event="submit">
+	<i class="layui-icon">&#xe609;</i>
+	</button>
+	{{#  } }}
+</div>
+</script>
+</body>
+</html>
+

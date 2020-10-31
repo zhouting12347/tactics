@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>爆料新建</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+  <style type="text/css">
+		body{overflow-y: scroll;}
+  </style>
+</head>
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+        <div class="layui-form-item">
+          <div class="layui-inline">
+            <input type="text" id="keyword" placeholder="搜索..." autocomplete="off" class="layui-input">
+          </div>
+    
+          <div class="layui-inline" style="margin:0 5px 0 10px;">
+          日期范围
+          </div>
+          <div class="layui-inline">
+            <div class="layui-input-inline">
+              <input type="text" class="layui-input" id="createtime" placeholder="请选择日期范围">
+            </div>
+          </div>
+          <div class="layui-inline">
+            <button class="layui-btn layuiadmin-btn-admin layui-btn-normal" style="background-color:#0080C0;" id="search">
+              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+        
+       <!-- <div class="layui-card-body layui-card-header">
+        <button type="button" class="layui-btn layui-btn-radius">直播稿</button>
+        <button type="button" class="layui-btn layui-btn-radius" style="background-color:#FB7D00;">微博</button>
+        <button type="button" class="layui-btn layui-btn-radius" style="background-color:#0072A8;">通发稿</button>
+        <button type="button" class="layui-btn layui-btn-radius layui-btn-primary">其他</button>
+      </div> -->
+        
+      <div class="layui-card-body">
+         <table class="layui-table" id="documentTable"  lay-filter="myTable"></table>
+       </div>
+
+    </div>
+  </div>
+
+ <script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+ <script src="__PUBLIC__/layui/layui.all.js"></script>
+  <script src="__PUBLIC__/js/vds.js"></script>
+<script>
+window.onload=function(){
+    //日期范围
+    layui.laydate.render({
+      elem: '#createtime'
+      ,range:true
+    });
+
+    
+    //媒体库table，只看见自己创建的稿件
+	var table=layui.table;
+	  table.render({
+	    elem: '#documentTable'
+	    ,url:'/index.php/Table/getTableData'
+	    //,even:true
+	    ,height:"full-135"
+		,limit:20
+	    ,limits:[20,30,50,100]
+	    ,id:'documentTable'
+	    ,where:{tableName:"baoliao",tableType:"baoliaoWait"}
+	    ,cols: [[
+			   {type: 'numbers', title: '序号'}
+	          ,{field:'d_title',title: '标题',templet:function(item){
+				  	if(item.d_status==-1){
+				  		return "<span style='color:#FF5722;'>"+item.d_title+"</span>";
+				  	}else{
+				  		return item.d_title;
+				  	}
+				  }
+			  }
+			  ,{field:'d_author',title: '作者'}
+			  ,{field:'d_failedReason',title:'审核未通过理由'}
+	   	      ,{field:'d_createTime',title: '创建日期'}
+	    	  ,{field:'action', title: '操作',width:300,align:'center',fixed: 'right',toolbar: '#tableBar'}
+	    ]]
+	    ,page: true
+	    ,done: function(res, curr, count){
+	      }
+	  });
+	  
+	  //监听单元格事件
+	  table.on('tool(myTable)', function(obj){
+		var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+	    var data = obj.data;
+	    var d_id=data.d_id;
+	    if(layEvent === 'check'){
+	    	layer.open({
+		          title:'查看爆料'
+		          ,type: 2
+		          ,content: '/index.php/Baoliao/baoliao_check_layer?d_id='+d_id
+		          ,shadeClose: true
+		          ,area:screen() < 2 ? ['60%', '60%'] : ['1500px', '850px']
+		        });
+	    }else if(layEvent === 'edit'){
+	    	layer.open({
+		          title:'编辑爆料'
+		          ,type: 2
+		          ,content: '/index.php/Baoliao/baoliao_edit_layer?d_id='+d_id
+		          ,shadeClose: false
+		          ,area:screen() < 2 ? ['60%', '60%'] : ['1500px', '850px']
+		          ,cancel: function(index, layero){ 
+		        	  layui.table.reload("documentTable"); 
+		        	 }    
+		        });
+	    }else if(layEvent=== 'delete'){
+			layer.confirm('确认删除？',{icon: 3, title:'提示'},function(index){
+				  $.ajax({
+			            type: "POST",
+			            url:'/index.php/Baoliao/baoliao_del_handler?d_id='+d_id,
+			            dataType: "json",
+			            success: function(msg){
+			            	layer.msg(msg.info);
+			            	layui.table.reload("documentTable");
+			            },
+			            error: function(){
+			            	layer.msg("发送错误");
+			            }
+			        });
+				  layer.close(index);
+				});
+		}else if(layEvent=== 'submit'){
+			layer.confirm('确认提交审核？',{icon: 3, title:'提示'},function(index){
+				  $.ajax({
+			            type: "POST",
+			            url:'/index.php/Baoliao/baoliao_submit_handler?d_id='+d_id,
+			            dataType: "json",
+			            success: function(msg){
+			            	layer.msg(msg.info);
+			            	layui.table.reload("documentTable");
+			            },
+			            error: function(){
+			            	layer.msg("发送错误");
+			            }
+			        });
+				  layer.close(index);
+				});
+		}
+	  });
+    
+	//搜索按钮
+	$("#search").click(function(){
+		 var keyword=$("#keyword").val();
+		 var createtime=$("#createtime").val();
+		 var classify=$("#classify").val();
+		 layui.table.reload("documentTable",{
+			 where:{
+				keyword:keyword,createtime:createtime,classify:classify
+			}
+		    ,page: {
+	    	   curr: 1  ////重新从第 1 页开始
+	    	}
+		  });
+	});
+}
+</script>
+<script type="text/html" id="tableBar">
+<div>
+	 <button class="layui-btn layui-btn-sm" data-type="edit" style="margin:10;background-color:#0080C0;" title="编辑"  lay-event="edit">
+	  <i class="layui-icon">&#xe642;</i>
+	</button>
+	 <button class="layui-btn layui-btn-sm" style="margin:10;background-color:#FF0000;" title="删除"  lay-event="delete">
+	  <i class="layui-icon">&#xe640;</i>
+	 </button>
+</div>
+</script>
+</body>
+</html>
+

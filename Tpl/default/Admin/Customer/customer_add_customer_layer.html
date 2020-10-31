@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Suggestion</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+</head>
+<body>
+  <div class="layui-fluid">
+    <div class="layui-col-md12">
+      <div class="layui-card layui-col-md12">
+        <div class="layui-card-body layui-col-md12">
+          <form class="layui-form" id="form1" action="" lay-filter="component-form-group">
+            <div class="layui-form-item">
+              <label class="layui-form-label">Contact person:</label>
+              <div class="layui-input-block">
+                <input type="text" placeholder="" name="C_Contact" class="layui-input" lay-verify="required" >
+              </div>
+            </div>
+            
+             <div class="layui-form-item">
+              <label class="layui-form-label">Company:</label>
+              <div class="layui-input-block">
+                <input type="text" placeholder="" name="C_Company" class="layui-input" >
+              </div>
+            </div>
+            
+             <div class="layui-form-item">
+              <label class="layui-form-label">Mobile:</label>
+              <div class="layui-input-block">
+                <input type="text" placeholder="" name="C_Mobile"class="layui-input" >
+              </div>
+            </div>
+            
+             <div class="layui-form-item">
+              <label class="layui-form-label">E-mail:</label>
+              <div class="layui-input-block">
+                <input type="text" placeholder="" name="C_Email"class="layui-input" >
+              </div>
+            </div>
+                     
+            <div class="layui-form-item">
+              <label class="layui-form-label">Salesman</label>
+              <div class="layui-input-block">
+                <select name="C_SalesID" lay-verify="">
+                  <option value="">Select</option>
+                  <volist name="user" id="vo">
+	              	<option value="{$vo.U_ID}">{$vo.U_Username}</option>
+	              </volist>
+                </select>
+              </div>
+            </div>
+            
+	      <div class="layui-form-item">
+		    <label class="layui-form-label">Status</label>
+		    <div class="layui-input-block">
+		      <input type="radio" name="C_Enabled" value="1" title="Enable" checked>
+		      <input type="radio" name="C_Enabled" value="0" title="Disable" >
+		    </div>
+	 	  </div>
+            
+            <div class="layui-form-item layui-layout-admin" style="margin-bottom:0;">
+              <div class="layui-input-block">
+                <div class="layui-footer" style="left: 0;">
+                  <button type="submit" class="layui-btn" lay-submit="" lay-filter="component-form-demo1">Submit</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+      </div><!-- layui-card -->
+    </div>
+  </div><!-- layui-fluid -->
+  
+ <script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+ <script src="__PUBLIC__/layui/layui.all.js"></script>
+  <script>
+ window.onload=function(){
+	 //保存
+	  $("#form1").submit(function(){
+		  $.ajax({
+	            async: false,
+	            type: "POST",
+	            url:'/index.php/Customer/customer_add_customer_handler',
+	            data:$("#form1").serialize(),
+	            dataType: "json",
+	            success: function(msg){
+	            		layer.msg(msg.info);
+	            		if(msg.status==1){
+	            			document.getElementById("form1").reset();
+	            		}
+	              },
+	            error: function(){
+	            	layer.msg("error");
+	            }
+	        });
+	       return false; 
+	  });
+ }
+  </script>
+</body>
+</html>

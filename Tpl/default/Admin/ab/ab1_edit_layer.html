@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>ab 7000_000001</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+
+</head>
+<style>
+  .layui-form-label {
+    width:130px;
+  }
+  .layui-form-item .layui-input-inline{
+    width:400px;
+  }
+
+  .layui-input, .layui-textarea{
+    width:70%;
+  }
+</style>
+<body>
+  <div class="layui-fluid">
+    <div class="layui-col-md12">
+      <div class="layui-card layui-col-md12">
+        <div class="layui-card-body layui-col-md12">
+          <form class="layui-form" id="form1" action="" lay-filter="component-form-group">
+            <div class="layui-form-item">
+              <label class="layui-form-label">AlarmDate</label>
+              <div class="layui-input-inline">
+                <input type="text" placeholder="" autocomplete="off" name="AlarmDate" id="AlarmDate" class="layui-input" value="{$ab_1.AlarmDate}">
+              </div>
+              <label class="layui-form-label">Duration</label>
+              <div class="layui-input-inline">
+                <input type="text" placeholder="" autocomplete="off" name="Duration" id="Duration" class="layui-input" value="{$ab_1.Duration}">
+              </div>
+            </div>
+
+            <div class="layui-form-item">
+              <label class="layui-form-label">ProgramName</label>
+              <div class="layui-input-inline">
+                <input type="text" placeholder="" autocomplete="off" name="ProgramName" class="layui-input" value="{$ab_1.ProgramName}">
+              </div>
+              <label class="layui-form-label">CreatTime</label>
+              <div class="layui-input-inline">
+                <input type="text" placeholder="" autocomplete="off" name="CreatTime" class="layui-input" value="{$ab_1.CreatTime}">
+              </div>
+            </div>
+            
+            <div class="layui-form-item">
+              <label class="layui-form-label">AlarmHappenTime</label>
+              <div class="layui-input-inline">
+                <input type="text" placeholder="" autocomplete="off" name="AlarmHappenTime" id="happenTime" class="layui-input" value="{$ab_1.AlarmHappenTime}">
+              </div>
+              <label class="layui-form-label">AlarmEndTime</label>
+              <div class="layui-input-inline">
+                <input type="text" placeholder="" autocomplete="off" name="AlarmEndTime" id="endTime" class="layui-input" value="{$ab_1.AlarmEndTime}">
+              </div>
+            </div>
+
+            <div class="layui-form-item">
+              <label class="layui-form-label">FaultReason</label>
+              <div class="layui-input-block">
+                <input type="text" placeholder="" autocomplete="off" name="FaultReason" class="layui-input" value="{$ab_1.FaultReason}">
+              </div>
+            </div>
+            
+            <div class="layui-form-item">
+              <label class="layui-form-label">CreatMan</label>
+              <div class="layui-input-inline">
+                <input type="text" placeholder="" autocomplete="off" name="CreatMan" class="layui-input" value="{$ab_1.CreatMan}">
+              </div>
+              <label class="layui-form-label">ChannelName</label>
+              <div class="layui-input-inline">
+                <input type="text" placeholder="" autocomplete="off" name="ChannelName" class="layui-input" value="{$ab_1.ChannelName}">
+              </div>
+            </div>
+            
+            <div class="layui-form-item">
+              <label class="layui-form-label">frequencyValue</label>
+              <div class="layui-input-inline">
+                <input type="text" placeholder="" autocomplete="off" name="frequencyValue" class="layui-input" value="{$ab_1.frequencyValue}">
+              </div>
+              <label class="layui-form-label">IfNewsTime</label>
+              <div class="layui-input-inline">
+                <input type="text" placeholder="" autocomplete="off" name="IfNewsTime" class="layui-input" value="{$ab_1.IfNewsTime}">
+              </div>
+            </div>
+            
+            <div class="layui-form-item">
+              <label class="layui-form-label">DutyMan1</label>
+              <div class="layui-input-inline">
+                <input type="text" placeholder="" autocomplete="off" name="DutyMan1" class="layui-input" value="{$ab_1.DutyMan1}">
+              </div>
+              <label class="layui-form-label">DutyMan2</label>
+              <div class="layui-input-inline">
+                <input type="text" placeholder="" autocomplete="off" name="DutyMan2" class="layui-input" value="{$ab_1.DutyMan2}">
+              </div>
+            </div>
+            
+            
+            
+            <div class="layui-form-item">
+              <label class="layui-form-label">Description</label>
+              <div class="layui-input-block">
+                <input type="text" placeholder="" autocomplete="off"  name="Description"class="layui-input" value="{$ab_1.Description}">
+              </div>
+            </div>
+            
+            <div class="layui-form-item">
+              <label class="layui-form-label">AlarmType</label>
+              <div class="layui-input-inline">
+                <input type="text" placeholder="" autocomplete="off" name="AlarmType" class="layui-input" value="{$ab_1.AlarmType}">
+              </div>
+              <label class="layui-form-label">AlarmLevel</label>
+              <div class="layui-input-inline">
+                <input type="text" placeholder="" autocomplete="off" name="AlarmLevel" class="layui-input" value="{$ab_1.AlarmLevel}">
+              </div>
+            </div>
+
+            <div class="layui-form-item">
+              <label class="layui-form-label">SignalType</label>
+              <div class="layui-input-inline">
+                <input type="text" placeholder="" autocomplete="off" name="SignalType" class="layui-input" value="{$ab_1.SignalType}">
+              </div>
+            </div>
+                        
+          <input type="hidden" name="ab_id" value="{$ab_1.ab_id}" />
+        
+            
+            <div class="layui-form-item layui-layout-admin" style="margin-bottom:0;">
+              <div class="layui-input-block">
+                <div class="layui-footer" style="left: 0;">
+                  <button type="submit" class="layui-btn" lay-submit="" lay-filter="component-form-demo1">提交</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+      </div><!-- layui-card -->
+    </div>
+  </div><!-- layui-fluid -->
+  
+ <script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+ <script src="__PUBLIC__/layui/layui.all.js"></script>
+  <script>
+ window.onload=function(){
+
+
+    //日期范围
+    layui.laydate.render({
+      elem: '#happenTime',
+      type:'time'
+    });
+
+     //日期范围
+     layui.laydate.render({
+      elem: '#endTime',
+      type:'time'
+    });
+
+     //日期范围
+     layui.laydate.render({
+      elem: '#Duration',
+      type:'time'
+    });
+
+
+     //日期范围
+     layui.laydate.render({
+      elem: '#AlarmDate',
+      type:'datetime'
+    });
+
+
+    
+	 //保存
+	  $("#form1").submit(function(){
+		  $.ajax({
+	            async: false,
+	            type: "POST",
+	            url:'/index.php/Index/ab1_edit_handler',
+	            data:$("#form1").serialize(),
+	            dataType: "json",
+	            success: function(msg){
+	            		layer.msg(msg.info);
+	            		if(msg.status==1){
+	            			//document.getElementById("form1").reset();
+	            		}
+	              },
+	            error: function(){
+	            	layer.msg("error");
+	            }
+	        });
+	       return false; 
+	  });
+ }
+  </script>
+</body>
+</html>

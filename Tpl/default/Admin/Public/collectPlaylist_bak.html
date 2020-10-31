@@ -1,0 +1,78 @@
+<include file="Public/header" />
+<body class="no-skin" style="background-color: white;">
+<br>
+						<form class="nav-search" id="nav-search" method="post" action="__GROUP__/Public/collectPlaylist">
+							<p>
+								<input type="hidden" name="isSearch" value="1" />
+								<input type="text" placeholder="开始日期" name="startDay" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" />
+								<input type="text" placeholder="结束日期" name="endDay" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  />
+								<button type="submit" class="btn btn-success btn-sm">查询<i class="ace-icon fa fa-search icon-on-right bigger-110"></i></button>
+							</p>
+						</form>
+						<if condition="$total neq null"><p><b>[{$startDay}]-[{$endDay}]共申请{$total}条任务</b></p></if>
+					<div class="row">
+						<div class="col-xs-12">
+							<div class="table-header">
+								<i class="ace-icon fa fa-table"></i>&nbsp&nbsp查询结果
+							</div>
+							<!-- <div class="dataTables_borderWrap"> -->
+							<div>
+								<table id="table1" class="table table-striped table-bordered table-hover">
+										<thead>
+											<tr>
+												<th>开始时间</th>
+												<th>结束时间</th>
+												<th>解码器</th>
+												<th>PID</th>
+												<th>PID备注名</th>
+												<th>案件名称</th>
+												<th>入流法院</th>
+												<th>出流法院</th>
+												<th>联系方式</th>
+											</tr>
+										</thead>
+										<tbody>
+											<volist name="playlist" id="vo">
+												<tr>
+													<td>{$vo.P_StartTime}</td>
+													<td>{$vo.P_EndTime}</td>
+													<td>{$vo.P_Decoder}</td>
+													<td>{$vo.P_OutPID}</td>
+													<td>{$vo.L_Comment}</td>
+													<td>{$vo.P_CaseName}</td>
+													<td>{$vo.P_CourtIn}</td>
+													<td>{$vo.P_CourtOut}</td>
+													<td>{$vo.P_RequestContact}</td>
+												</tr>
+										</volist>
+									</tbody>
+								</table>
+							</div><!-- end<div class="dataTables_borderWrap"> -->
+						</div><!-- end col -->
+					</div><!-- end row -->
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<script src="__PUBLIC__/js/bootstrap.min.js"></script>
+
+		<!-- page specific plugin scripts -->
+		<script src="__PUBLIC__/js/jquery.dataTables.min.js"></script>
+		<script src="__PUBLIC__/js/jquery.dataTables.bootstrap.js"></script>
+		
+		<!-- ace scripts -->
+		<script src="__PUBLIC__/js/ace-elements.min.js"></script>
+		<script src="__PUBLIC__/js/ace.min.js"></script>
+		<script src="__PUBLIC__/layer/layer.js"></script>
+		<script src="__PUBLIC__/laypage/laypage.js"></script>
+		<script src="/Public/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript">
+		jQuery(function($){
+			$('#table1').dataTable({
+				stateSave: false,//保存表格状态
+				lengthMenu: [8],
+				language:{
+		            "url": "/Public/font/zh_CN.txt"
+		    	},
+			});
+		});
+		</script>
+	</body>
+</html>

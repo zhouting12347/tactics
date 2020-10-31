@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Uploading</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+  <style type="text/css">
+        tbody .layui-table-cell {
+            height: auto;
+            line-height: 40px;
+        }
+    </style>
+</head>
+<body>
+
+  <div class="layui-fluid">
+	<div class="layui-card">
+      <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+        <div class="layui-form-item">
+          <div class="layui-inline">
+            <input type="text" id="keyword" placeholder="Keyword" autocomplete="off" class="layui-input">
+          </div>
+          <div class="layui-inline" style="margin:0 5px 0 10px;">
+          Player type
+          </div>
+          <div class="layui-inline">
+            <select id="selecttype" lay-verify="">
+              <option value="">Select</option>
+              <volist name="playertype" id="vo">
+              	<option value="{$vo.PT_ID}">{$vo.PT_Name}</option>
+              </volist>
+            </select>
+          </div>
+           <div class="layui-inline" style="margin:0 5px 0 10px;">
+          Area
+          </div>
+           <div class="layui-inline">
+            <select id="selectarea" lay-verify="">
+              <option value="">Select</option>
+              <volist name="area" id="vo">
+              	<option value="{$vo.A_ID}">{$vo.A_Name}</option>
+              </volist>
+            </select>
+          </div>
+         <div class="layui-inline" style="margin:0 5px 0 10px;">
+          Validity
+          </div>
+          <div class="layui-inline">
+            <select id="enable" lay-verify="">
+              <option value="">Select</option>
+              <option value="1">Enabled</option>
+              <option value="0">Disabled</option>
+              <option value="2">Maintenance</option>
+            </select>
+          </div>
+          
+          <div class="layui-inline">
+            <button class="layui-btn layuiadmin-btn-admin layui-btn-normal" style="background-color:#0080C0;" id="search" >
+              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="layui-card-body">
+             <table class="layui-table" id="playerTable"  lay-filter="myTable"></table>
+       </div>
+
+    </div>
+  </div>
+
+ <script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+ <script src="__PUBLIC__/layui/layui.all.js"></script>
+<script>
+var C_ID="{$C_ID}";
+window.onload=function(){
+	var table=layui.table;
+	  table.render({
+	    elem: '#playerTable'
+	    ,url:'/index.php/Table/getTableData'
+	    ,even:true
+	    ,height:"full-150"
+		,limit:10
+	    ,limits:[10,20,50,100]
+	    ,id:'playerTable'
+	    ,where:{tableName:"player",tableType:"queryclipplayerrel",C_ID:C_ID}
+	    ,cols: [[
+	           {field:'P_Location',title: 'Address'}
+	   	      ,{field:'PT_Name',title: 'Play type'}
+	   	      ,{field:'A_Name',title: 'Area'}
+	   	      ,{field:'P_Remark',title: 'Remark'}
+	   	      ,{field:'P_Activation',title: 'Login time'}
+	   	      ,{field:'U_Username',title: 'Owner'}
+	   	      ,{field:'P_SN',title: 'S/N'}
+	   	      ,{field:'P_MID',title: 'ID'}
+	   	      ,{field:'P_Enabled',title: 'Enable',templet:function(item){
+	   	    	  if(item.P_Enabled==0){
+	   	    		  return "Disabled";
+	   	    	  }else if(item.P_Enabled==1){
+	   	    		  return "Enabled";
+	   	    	  }else if(item.P_Enabled==2){
+	   	    		  return "Maintenance";
+	   	    	  }
+	   	      }}
+	   	      ,{field:'P_Model',title: 'Model'}
+	   	  	  ,{field:'P_ScreenSize',title: 'Screen size'}
+	    	  ,{field:'action', title: 'option',width:110,align:'center', toolbar: '#tableBar'}
+	    ]]
+	    ,page: true
+	    ,done: function(res, curr, count){
+	      }
+	  });
+	
+	//用户工具条响应事件
+	layui.table.on('tool(myTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+		  var data = obj.data; //获得当前行数据
+		  var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+		  var tr = obj.tr; //获得当前行 tr 的DOM对象
+		  var id=data.P_ID;
+		  var sn=data.P_SN;
+		  
+		  if(layEvent=="unit"){ 
+			  layer.open({
+				    type: 2,
+				    anim:2,
+				    title:"Unit",
+				    content: '/index.php/Query/query_unit_layer?id='+id,
+				    area:screen() < 2 ? ['60%', '60%'] : ['1400px', '600px'],
+				});
+		  }else if(layEvent=="whole"){ 
+			  layer.open({
+				    type: 2,
+				    anim:2,
+				    title:"Whole",
+				    content: '/index.php/Query/query_whole_layer?sn='+sn,
+				    area:screen() < 2 ? ['60%', '60%'] : ['1000px', '600px'],
+				});
+		  }
+	});
+
+	//搜索按钮
+	$("#search").click(function(){
+		 var keyword=$("#keyword").val();
+		 var selecttype=$("#selecttype").val();
+		 var selectarea=$("#selectarea").val();
+		 var enable=$("#enable").val();
+		 layui.table.reload("playerTable",{where:
+		  	{keyword:keyword,selecttype:selecttype,selectarea:selectarea,enable:enable}
+		  });
+	});
+	
+}
+
+function screen() {
+    //获取当前窗口的宽度
+    var width = $(window).width();
+    if (width > 1200) {
+        return 3;   //大屏幕
+    } else if (width > 992) {
+        return 2;   //中屏幕
+    } else if (width > 768) {
+        return 1;   //小屏幕
+    } else {
+        return 0;   //超小屏幕
+    }
+}
+
+
+</script>
+<script type="text/html" id="tableBar">
+<div class="layui-btn-group">
+  <button class="layui-btn layui-btn-sm" data-type="Unit" style="background-color:#0080C0;" title="Unit" lay-event="unit">
+	<i class="layui-icon">&#xe621;</i>
+  </button>
+  <button class="layui-btn layui-btn-sm" data-type="Whole" style="background-color:#DD006F;" title="Whole" lay-event="whole">
+	<i class="layui-icon">&#xe656;</i>
+  </button>
+</div>
+</script>
+</body>
+</html>
+

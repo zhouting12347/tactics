@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>ClipType</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+</head>
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-card-body" style="padding:15px;border-bottom:1px solid #f6f6f6;">
+        <div>
+          <button class="layui-btn layui-btn-lg" data-type="Add" id="add" style="background-color:#00B000;">
+            <i class="layui-icon">&#xe61f;</i>添加人员岗位
+          </button>
+        </div>
+      </div>
+		
+	 <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+        <div class="layui-form-item">
+          <div class="layui-inline" style="margin:0 5px 0 10px;">
+          姓名
+          </div>
+          <div class="layui-inline">
+            <select id="u_id" lay-verify="required" lay-search>
+               	<option value>请选择或直接搜索</option>
+           		<volist name="user" id="vo">
+           			<option value="{$vo.u_id}">{$vo.u_realname}</option>
+           		</volist>
+             	</select>
+          </div>
+          <div class="layui-inline" style="margin:0 5px 0 10px;">
+          值班岗位
+          </div>
+          <div class="layui-inline">
+            <div class="layui-input-inline">
+              <select id="p_name" lay-verify="required">
+             		<option value>请选择</option>
+             		<option value="TV主播">TV主播</option>
+             		<option value="TV编辑">TV编辑</option>
+             		<option value="TV技术">TV技术</option>
+             		<option value="中班">中班</option>
+             		<option value="微信编辑">微信编辑</option>
+             		<option value="会议">会议</option>
+             		<option value="外出">外出</option>
+             		<option value="值班">值班</option>
+             	</select>
+            </div>
+          </div>
+          <div class="layui-inline">
+            <button class="layui-btn layuiadmin-btn-admin layui-btn-normal" style="background-color:#0080C0;" id="search">
+              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+		
+      <div class="layui-card-body">
+            <table class="layui-table" id="positionTable"  lay-filter="myTable"></table>
+      </div>
+    </div>
+  </div>
+
+ <script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+ <script src="__PUBLIC__/layui/layui.all.js"></script>
+ <script src="__PUBLIC__/js/vds.js"></script>
+<script>
+ window.onload=function(){
+	 var table=layui.table;
+	  table.render({
+	    elem: '#positionTable'
+	    ,url:'/index.php/Table/getTableData'
+	    ,even:true
+	    ,height:"full-220"
+		,limit:14
+	    ,limits:[14,30,50,100]
+	    ,id:'positionTable'
+	    ,where:{tableName:"position",tableType:'position'}
+	    ,cols: [[
+	       {type:'numbers',title:"序号"}
+	      ,{field:'u_realname',title: '姓名'}
+	   	  ,{field:'p_name',title: '值班岗位'}
+	      ,{field:'action', title: '操作',width:110,align:'center', toolbar: '#tableBar'}
+	    ]]
+	    ,page: true
+	    ,done: function(res, curr, count){
+	      }
+	  });
+	
+	//用户工具条响应事件
+	layui.table.on('tool(myTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+		  var data = obj.data; //获得当前行数据
+		  var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+		  var tr = obj.tr; //获得当前行 tr 的DOM对象
+		  var u_id=data.u_id;
+		  var p_name=data.p_name;
+		  if(layEvent=="edit"){
+			  layer.open({
+				    type: 2,
+				    anim:2,
+				    title:"编辑标签",
+				    content: '/index.php/Config/config_edit_tag_layer?id='+id,
+				    area:screen() < 2 ? ['60%', '60%'] : ['600px', '340px'],
+				    maxmin: true,
+				    end: function(){
+				    	//刷新positionTable
+	     				layui.table.reload("positionTable");
+				    }
+				});
+		  }else if(layEvent=="delete"){
+		    	 layer.confirm('确认删除?', {icon: 3, title:'提示'}, function(index){
+					  $.ajax({
+				            async: false,
+				            type: "GET",
+				            url:'/index.php/Arrange/arrange_del_position_handler?u_id='+u_id+'&p_name='+p_name,
+				            dataType: "json",
+				            success: function(msg){
+				            		layer.msg(msg.info);
+				            		if(msg.status==1){
+				            			//刷新positionTable
+				            			layui.table.reload("positionTable");
+				            		}
+				              },
+				            error: function(){
+				            	layer.msg("error");
+				            }
+				        });
+					  layer.close(index);
+					});
+		  }
+	});
+	
+	//新增页
+	$("#add").click(function(){
+		layer.open({
+	          title:'新增标签'
+	          ,type: 2
+	          ,content: '/index.php/Arrange/arrange_add_position_layer'
+	          ,shadeClose: false
+	          ,area:screen() < 2 ? ['60%', '60%'] : ['600px', '500px']
+	          ,maxmin: true
+	          ,cancel: function(index, layero){ 
+	        	  layui.table.reload("positionTable");
+	        	 }    
+	        });
+	});
+	
+	//搜索按钮
+	$("#search").click(function(){
+		 var u_id=$("#u_id").val();
+		 var p_name=$("#p_name").val();
+		 layui.table.reload("positionTable",{where:
+		  	{u_id:u_id,p_name:p_name}
+		  });
+	});
+
+ }
+</script>
+<script type="text/html" id="tableBar">
+<div class="layui-btn-group">
+    <button class="layui-btn layui-btn-sm" style="background-color:#FF0000;" title="Delete" lay-event="delete">
+      <i class="layui-icon">&#xe640;</i>
+    </button>
+</div>
+</script>
+</body>
+</html>
+

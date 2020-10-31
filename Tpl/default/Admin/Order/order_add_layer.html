@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>ADD</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/uploadTable.css" media="all">
+  <style>
+    #PT>.layui-form-radio{
+      margin:0;
+    }
+  </style>
+</head>
+<body>
+  <div class="layui-fluid">
+    <div class="layui-col-md12">
+      <div class="layui-card layui-col-md12">
+        <div class="layui-card-body layui-col-md12">
+          <form class="layui-form" action="" lay-filter="component-form-group" id="form1">
+            <div class="layui-form-item">
+              <label class="layui-form-label">Order NO</label>
+              <div class="layui-input-block">
+                <input type="text" name="O_ID" class="layui-input" readonly="readonly" value="{$orderID}">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">Contract</label>
+              <div class="layui-input-block">
+                <input type="text" placeholder=""  name="O_Contract" class="layui-input">
+              </div>
+            </div>
+            
+            <div class="layui-form-item">
+              <label class="layui-form-label">Salesman</label>
+              <div class="layui-input-block">
+                <select name="O_SalesID" lay-verify="" id="sales">
+                  <option value="">Select</option>
+                  <volist name="user" id="vo">
+	              	<option value="{$vo.U_ID}">{$vo.U_Username}</option>
+	              </volist>
+                </select>
+              </div>
+            </div>
+            
+            <div class="layui-form-item">
+              <label class="layui-form-label">Customer</label>
+              <div class="layui-input-block">
+                <select name="O_CustomerID" lay-verify="" id="customer">
+                  <option value="">Select</option>
+                  <volist name="customer" id="vo">
+	              	<option value="{$vo.C_ID}">{$vo.C_Contact}</option>
+	              </volist>
+                </select>
+              </div>
+            </div>
+            
+            <div class="layui-form-item">
+              <label class="layui-form-label">Amount</label>
+              <div class="layui-input-block">
+                <input type="number" placeholder=""  name="O_Value" class="layui-input">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">Payment</label>
+              <div class="layui-input-block">
+                <select name="O_Payment" lay-verify="">
+                  <option>Select</option>
+                  <option value=0 >non-payment</option>
+                  <option value=1 >payment received</option>
+                  <option value=2 >partial payment</option>
+                </select>
+              </div>
+            </div>
+  
+            <div class="layui-form-item" style="margin:0;padding:0 15px">
+              <a class="layui-btn layui-btn-lg" data-type="players" style="background-color:#00A200;" id="addPlayer">
+                Players
+              </a>
+            </div>
+            <div class="layui-card-body">
+              <table class="layui-table" id="playerTable"  lay-filter="myTable"></table>
+            </div>
+            <div class="layui-form-item" style="margin:0;padding:0 15px">
+              <a class="layui-btn layui-btn-lg" data-type="videos" style="background-color:#0076AE;" id="addVideo">
+                Video
+              </a>
+            </div>
+            <div class="layui-card-body">
+              <table class="layui-table" id="clipsTable"  lay-filter="myTable2"></table>
+            </div>
+            
+              <div class="layui-form-item" style="margin-top:10px;">
+                <label class="layui-form-label" style="margin-right:10px">Play mode</label>
+                <div class="layui-input-block" id="PT">
+                  <input type="radio" name="PT" value="Rolling" title="Rotation" checked>
+                  <input type="radio" name="PT" value="Integral point" title="On hour">
+                  <input type="radio" name="PT" value="Half point" title="On half hour" >
+                  <input type="radio" name="PT" value="Integral Half" title="On hour+half" >
+                  <input type="radio" name="PT" value="Fixed point" title="Scheduled" >
+                  <div class="layui-inline">
+                    <input type="text" id="fixed"  name="O_FixTime" placeholder="" class="layui-input">
+                  </div>
+                  <input type="radio" name="PT" value="Stipulated time" title="Specific point" autocomplete="off">
+                  <div class="layui-inline">
+                    <input type="text" id="once" name="O_OnceDateTime" placeholder="" class="layui-input" autocomplete="off">
+                  </div>
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">Start date</label>
+                <div class="layui-input-block">
+                  <input type="text" placeholder="Start from" id="startdate" name="O_StartDate" class="layui-input" autocomplete="off">
+                </div>
+              </div>
+              <div class="layui-form-item" style="margin-bottom:40px;">
+                <label class="layui-form-label">End date</label>
+                <div class="layui-input-block">
+                  <input type="text" placeholder="To" id="enddate" name="O_EndDate" class="layui-input" autocomplete="off">
+                </div>
+              </div>
+              <div class="layui-form-item layui-layout-admin" style="margin-bottom:0;">
+                <div class="layui-input-block">
+                  <div class="layui-footer" style="left: 0;">
+                    <button type="submit" class="layui-btn" lay-submit="" lay-filter="component-form-demo1">Submit</button>
+                  </div>
+                </div>
+              </div>
+          </form>
+        </div>
+      </div><!-- layui-card -->
+    </div>
+  </div><!-- layui-fluid -->
+  
+<script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+<script src="__PUBLIC__/layui/layui.all.js"></script> 
+<script src="__PUBLIC__/js/vds.js"></script>
+<script>
+var orderID="{$orderID}";
+var submit=0;
+window.onload=function(){
+	var table=layui.table;
+	//player表
+	  table.render({
+	    elem: '#playerTable'
+	    ,url:'/index.php/Table/getTableData'
+	    ,even:true
+	    ,height:"220"
+		,limit:3
+	    ,limits:[3,10,30,50]
+	    ,id:'playerTable'
+	    ,where:{tableName:"orderplayerrel",tableType:"orderplayerrel",orderID:orderID}
+	    ,cols: [[
+	           {field:'P_Location',title: 'Address'}
+	   	      ,{field:'PT_Name',title: 'Player type'}
+	   	      ,{field:'A_Name',title: 'Area'}
+	   	      ,{field:'P_SN',title: 'SN'}
+	   	      ,{field:'P_Remark',title: 'Remark'}
+	    	  ,{field:'action', title: 'action',width:110,align:'center', toolbar: '#playerTableBar'}
+	    ]]
+	    ,page: true
+	    ,done: function(res, curr, count){
+	      }
+	  });
+	
+	  table.render({
+		    elem: '#clipsTable'
+		    ,url:'/index.php/Table/getTableData'
+		    ,even:true
+		    ,height:"400"
+			,limit:3
+		    ,limits:[3,10,30,50]
+		    ,id:'clipsTable'
+		    ,where:{tableName:"ordercliprel",tableType:"ordercliprel",orderID:orderID}
+		    ,cols: [[
+		       {field:'C_Thumbnail',title: 'Thumbnail',templet:"#C_Thumbnail",width:160}
+		      ,{field:'C_Title',title: 'Name'}
+		      ,{field:'C_Duration',title: 'Duration',width:110}
+		      ,{field:'action', title: 'action',width:120,align:'center', toolbar: '#clipsTableBar'}
+		    ]]
+		    ,page: true
+		    ,done: function(res, curr, count){
+		      }
+		  });
+	
+	//用户工具条响应事件
+		layui.table.on('tool(myTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+			  var data = obj.data; //获得当前行数据
+			  var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+			  var tr = obj.tr; //获得当前行 tr 的DOM对象
+			  var id=data.P_ID;
+			  
+			  if(layEvent=="delete"){ 
+				  $.ajax({
+			            async: false,
+			            type: "GET",
+			            url:'/index.php/Order/order_del_order_player_rel_handler?O_ID='+orderID+"&P_ID="+id,
+			            dataType: "json",
+			            success: function(msg){
+			            		//layer.msg(msg.info);
+			            		if(msg.status==1){
+			            			//刷新playerTable
+			            			layui.table.reload("playerTable");
+			            		}
+			              },
+			            error: function(){
+			            	layer.msg("error");
+			            }
+			        });
+			  }
+		});
+	
+		//用户工具条响应事件
+		layui.table.on('tool(myTable2)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+			  var data = obj.data; //获得当前行数据
+			  var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+			  var tr = obj.tr; //获得当前行 tr 的DOM对象
+			  var id=data.C_ID;
+			  
+			  if(layEvent=="delete"){ 
+				  $.ajax({
+			            async: false,
+			            type: "GET",
+			            url:'/index.php/Order/order_del_order_clip_rel_handler?O_ID='+orderID+"&C_ID="+id,
+			            dataType: "json",
+			            success: function(msg){
+			            		//layer.msg(msg.info);
+			            		if(msg.status==1){
+			            			//刷新clipsTable
+			            			layui.table.reload("clipsTable");
+			            		}
+			              },
+			            error: function(){
+			            	layer.msg("error");
+			            }
+			        });
+			  }
+		});
+	
+	//选择机顶盒
+	$("#addPlayer").click(function(){
+		if(submit){return false;}
+		layer.open({
+		    type: 2,
+		    title:"Player",
+		    content: '/index.php/Order/order_add_order_player_rel_layer?id='+orderID,
+		    area:screen() < 2 ? ['60%', '60%'] : ['1000px', '600px'],
+		    maxmin: true,
+		    end: function(){
+		    	//刷新clipsTable
+ 				layui.table.reload("playerTable");
+		    }
+		});
+	});
+	
+	//选择机顶盒
+	$("#addVideo").click(function(){
+		if(submit){return false;}
+		layer.open({
+		    type: 2,
+		    title:"Video",
+		    content: '/index.php/Order/order_add_order_clip_rel_layer?id='+orderID,
+		    area:screen() < 2 ? ['60%', '60%'] : ['1000px', '600px'],
+		    maxmin: true,
+		    end: function(){
+		    	//刷新clipsTable
+ 				layui.table.reload("clipsTable");
+		    }
+		});
+	});
+	
+	//日期范围
+	layui.laydate.render({
+	  elem: '#startdate'
+	  ,lang: 'en'
+	});
+	
+	//日期范围
+	layui.laydate.render({
+	  elem: '#enddate'
+	  ,lang: 'en'
+	});
+	
+	//日期范围
+	layui.laydate.render({
+	  elem: '#fixed'
+	  ,type:'time'
+	  ,lang: 'en'
+	});
+	
+	//日期范围
+	layui.laydate.render({
+	  elem: '#once'
+	  ,type:'datetime'
+	  ,lang: 'en'
+	});
+	
+	//定时方式切换
+	layui.form.on('radio', function(data){
+		var clipsTable=layui.table.cache.clipsTable;
+		var clipsTableCount=clipsTable.length;
+		  if(data.value!="Rolling"&&clipsTableCount>1){  //选择定时方式时，只允许有一个video
+			  layer.msg('When selecting timed mode, only one video is allowed');
+			  $("input[name='PT']:eq(0)").prop("checked",'checked'); 
+			  layui.form.render('radio');
+			  return false
+		  }
+		  if(data.value=="Fixed point"){      //自定义时间
+			  $("#once").val(null);
+			  $("#startdate,#enddate").removeAttr("disabled");
+		  }else if(data.value=="Stipulated time"){  //播放一次
+			  $("#fixed").val(null);
+			  $("#startdate,#enddate").val(null);
+			  $("#startdate,#enddate").attr("disabled","disabled");
+		  }else{
+			  $("#once").val(null);
+			  $("#fixed").val(null);
+			  $("#startdate,#enddate").removeAttr("disabled");
+		  }
+		  //console.log(data.elem); //得到radio原始DOM对象
+		  //console.log(data.value); //被点击的radio的value值
+	});  
+	
+	 //保存
+	  $("#form1").submit(function(){ 
+		  var sales=$("#sales").val();
+		  var customer=$("#customer").val();
+		  if(!sales){
+			  layer.msg("Please select sales");
+			  return false;
+		  }
+		  
+		  if(!customer){
+			  layer.msg("Please select customer");
+			  return false;
+		  }
+		  
+		  //验证是否选择了视频
+		  var clipsLength=layui.table.cache.clipsTable.length;
+		  if(clipsLength<1){
+			  layer.msg("Please select clips");
+			  return false;
+		  }
+		  
+		  //验证是否选择了盒子
+		  var playerLength=layui.table.cache.playerTable.length;
+		  if(playerLength<1){
+			  layer.msg("Please select player");
+			  return false;
+		  }
+		  
+		  var data=$("#form1").serialize();
+		  
+		  var clipsTable=layui.table.cache.clipsTable;
+	      var clipsTableCount=clipsTable.length;
+		  var PT=$("input[name='PT']:checked").val();
+		  if(PT!="Rolling"&&clipsTableCount>1){  //选择定时方式时，只允许有一个video
+			  layer.msg('When selecting timed mode, only one video is allowed');
+			  return false
+		  }
+		  
+		  if(PT=="Fixed point"){
+			  var fixed=$("#fixed").val();
+			  if(!fixed){
+				  layer.msg("Please select scheduled time");
+				  return false;
+		  		}
+		  }
+		  if(PT!="Stipulated time"){  //如果不是单次播放，判断开始日期是否填写，开始日期是否小于结束日期
+			  var startdate=$("#startdate").val();
+		  	  var enddate=$("#enddate").val();
+		  	  if(!(startdate&&enddate)){
+		  		  layer.msg("Please select date");
+		  		  return false;
+		  	  }
+		  	  if(startdate>enddate){
+		  		  layer.msg("The start date is larger than the end date");
+		  		  return false;
+		  	  }
+		  }else{
+			  var stipulatedtime=$("#once").val();
+			  if(!stipulatedtime){
+				  layer.msg("Please select specific point date");
+				  return false;
+			  }
+		  }
+
+		  $.ajax({
+	            async: false,
+	            type: "POST",
+	            url:'/index.php/Order/order_submit_editing_handler',
+	            data:data,
+	            dataType: "json",
+	            success: function(msg){
+	            		layer.msg(msg.info);
+	            		if(msg.status==1){
+	            			//禁用videos,players按钮
+	            			submit=1;
+	            			//隐藏submit
+	            			$("button[type='submit']").css("display","none");
+	            		}
+	              },
+	            error: function(){
+	            	layer.msg("error");
+	            }
+	        });
+	       return false; 
+	  });
+}
+
+</script>
+<script type="text/html" id="playerTableBar">
+<div class="layui-btn-group">
+<button class="layui-btn layui-btn-sm" style="background-color:#FF0000;" title="Delete" lay-event="delete">
+<i class="layui-icon">&#xe640;</i>
+</button>
+</div>
+</script>
+<script type="text/html" id="clipsTableBar">
+<div class="layui-btn-group">
+<button class="layui-btn layui-btn-sm" style="background-color:#FF0000;" title="Delete" lay-event="delete">
+<i class="layui-icon">&#xe640;</i>
+</button>
+</div>
+</script>
+<script type="text/html" id="C_Thumbnail">
+<video src="" poster="{{d.imgurl}}" width="100%" height="100%"></video>
+<i class="layui-icon layui-icon-play" style="position:absolute;left:60px;top:30px;color:#B6B6B6;font-size:40px;cursor:pointer" id="{{d.C_ID}}" onclick="videoLayer(this)"></i>
+</script>
+</body>
+</html>

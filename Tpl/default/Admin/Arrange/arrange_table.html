@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>ClipType</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+</head>
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+	 <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+        <div class="layui-form-item">
+          <div class="layui-inline">
+            <button class="layui-btn layuiadmin-btn-admin layui-btn-normal" style="background-color:#005984;" id="beforeWeek">
+              <i class="layui-icon layui-icon-left layuiadmin-button-btn"></i> 前一周
+            </button>
+          </div>
+          <div class="layui-inline" style="margin:0 20px;padding-right:10px;font-size:24px;font-weight:bold;color:#2E2E2E;">
+           {$week[0]} 到 {$week[6]}
+          </div>
+          <div class="layui-inline">
+            <button class="layui-btn layuiadmin-btn-admin layui-btn-normal" style="background-color:#005984;" id="afterWeek">
+              后一周 <i class="layui-icon layui-icon-right layuiadmin-button-btn"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+		
+      <div class="layui-card-body">
+      	 <form class="layui-form" id="form1">
+           <table class="layui-table layui-form">
+          <thead>
+            <tr>
+              <th style="width:100px;">节目/日期</th>
+              <th id="星期一">周一 ({$week[0]})</th>
+              <th id="星期二">周二 ({$week[1]})</th>
+              <th id="星期三">周三 ({$week[2]})</th>
+              <th id="星期四">周四 ({$week[3]})</th>
+              <th id="星期五">周五 ({$week[4]})</th>
+              <th id="星期六">周六 ({$week[5]})</th>
+              <th id="星期日">周日 ({$week[6]})</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>TV主播</td>
+              <volist name="week" id="w">
+	              <td class="{$w}">
+	              	<select name="TV主播@{$w}" date="{$w}">
+	              		<volist name="position" id="vo">
+	              			<option value></option>
+	              			<if condition="$vo.p_name eq 'TV主播'">
+					        	<option value="{$vo.u_id}">{$vo.u_realname}</option>
+	              			</if>
+	              		</volist>
+	       			</select>
+	              </td>
+              </volist>
+            </tr>
+            
+            <tr>
+              <td>TV编辑</td>
+              <volist name="week" id="w">
+	              <td class="{$w}">
+	              	<select name="TV编辑@{$w}" date="{$w}">
+	              		<volist name="position" id="vo">
+	              			<option value></option>
+	              			<if condition="$vo.p_name eq 'TV编辑'">
+	              				<option value="{$vo.u_id}">{$vo.u_realname}</option>
+	              			</if>
+	              		</volist>
+	       			</select>
+	              </td>
+              </volist>
+            </tr>
+            
+            <tr>
+              <td>TV技术</td>
+              <volist name="week" id="w">
+	              <td class="{$w}">
+	              	<select name="TV技术@{$w}" date="{$w}">
+	              		<volist name="position" id="vo">
+	              			<option value></option>
+	              			<if condition="$vo.p_name eq 'TV技术'">
+	              				<option value="{$vo.u_id}">{$vo.u_realname}</option>
+	              			</if>
+	              		</volist>
+	       			</select>
+	              </td>
+              </volist>
+            </tr>
+            
+            <tr>
+              <td>中班</td>
+              <volist name="week" id="w">
+	              <td class="{$w}">
+	              	<select name="中班@{$w}" date="{$w}">
+	              		<volist name="position" id="vo">
+	              			<option value></option>
+	              			<if condition="$vo.p_name eq '中班'">
+	              				<option value="{$vo.u_id}">{$vo.u_realname}</option>
+	              			</if>
+	              		</volist>
+	       			</select>
+	              </td>
+              </volist>
+            </tr>
+            
+            <tr>
+              <td>微信编辑</td>
+              <volist name="week" id="w">
+	              <td class="{$w}">
+	              	<select name="微信编辑@{$w}" date="{$w}">
+	              		<volist name="position" id="vo">
+	              			<option value></option>
+	              			<if condition="$vo.p_name eq '微信编辑'">
+	              				<option value="{$vo.u_id}">{$vo.u_realname}</option>
+	              			</if>
+	              		</volist>
+	       			</select>
+	              </td>
+              </volist>
+            </tr>
+            
+            <tr>
+              <td>会议</td>
+              <volist name="week" id="w">
+	              <td class="{$w}">
+	              	<select name="会议@{$w}" date="{$w}">
+	              		<volist name="position" id="vo">
+	              			<option value></option>
+	              			<if condition="$vo.p_name eq '会议'">
+	              				<option value="{$vo.u_id}">{$vo.u_realname}</option>
+	              			</if>
+	              		</volist>
+	       			</select>
+	              </td>
+              </volist>
+            </tr>
+            
+            <tr>
+              <td class="{$k}">外出</td>
+              <volist name="week" id="w">
+	              <td class="{$w}">
+	              	<select name="外出@{$w}" date="{$w}">
+	              		<volist name="position" id="vo">
+	              			<option value></option>
+	              			<if condition="$vo.p_name eq '外出'">
+	              				<option value="{$vo.u_id}">{$vo.u_realname}</option>
+	              			</if>
+	              		</volist>
+	       			</select>
+	              </td>
+              </volist>
+            </tr>
+            
+            <tr>
+              <td>值班</td>
+              <volist name="week" id="w">
+	              <td>
+	              	<select name="值班@{$w}" date="{$w}">
+	              		<volist name="position" id="vo">
+	              			<option value></option>
+	              			<if condition="$vo.p_name eq '值班'">
+	              				<option value="{$vo.u_id}">{$vo.u_realname}</option>
+	              			</if>
+	              		</volist>
+	       			</select>
+	              </td>
+              </volist>
+            </tr>
+          </tbody>
+        </table>
+        <div class="layui-form-item layui-layout-admin" style="margin-bottom:0;">
+              <div class="layui-input-block">
+                <div class="layui-footer" style="left: 0;">
+                  <button type="submit" class="layui-btn" lay-submit="" lay-filter="component-form-demo1" id="save">保存</button>
+                </div>
+              </div>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <volist name="arrange" id="a">
+  	<input type="hidden" class="arrange" date={$a.a_date} u_id="{$a.u_id}" p_name="{$a.p_name}" />
+  </volist>
+  
+  <volist name="holiday" id="h">
+  	<input type="hidden" class="holiday" week="{$h.h_week}" date="{$h.h_date}" />
+  </volist>
+
+ <script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+ <script src="__PUBLIC__/layui/layui.all.js"></script>
+ <script src="__PUBLIC__/js/vds.js"></script>
+<script>
+var week_first="{$week[0]}";
+var week_last="{$week[6]}";
+var today="{$today}";
+ window.onload=function(){
+	/*  if(week_last<today){
+		 $("#save").attr("disabled","disabled");
+	 } */
+	 
+	 var arrange=$(".arrange");
+	 arrange.each(function(){
+	    var select_name=$(this).attr('p_name')+"@"+$(this).attr('date');
+	    var date=$(this).attr('date');
+	    var u_id=$(this).attr('u_id');
+	    $("select[name='"+select_name+"'][date='"+date+"']").val(u_id);
+	  });
+	 
+	 var holiday=$(".holiday");
+	 holiday.each(function(){
+		 var week=$(this).attr('week');
+		 var date=$(this).attr('date');
+		 $("#"+week).css("background-color","#f3d2d2");
+		 $("."+date+" select").attr("disabled","disabled"); //节假日除了值班外，不能够选择
+	 });
+	 
+	 
+	 
+	 //$("select[name='外出@2019-08-06'][date='2019-08-06']").val(211);
+	 layui.form.render('select');
+	 
+	//下一周
+	$("#afterWeek").click(function(){
+		var url="__GROUP__/Arrange/arrange_table?action=after&week_first="+week_first;
+		parent.$("#myIframe").attr("src",url);
+	});
+	
+	//上一周
+	$("#beforeWeek").click(function(){
+		var url="__GROUP__/Arrange/arrange_table?action=before&week_first="+week_first;
+		parent.$("#myIframe").attr("src",url);
+	});
+	
+	 //保存
+	  $("#form1").submit(function(){
+		  $.ajax({
+	            async: false,
+	            type: "POST",
+	            url:'/index.php/Arrange/arrange_save_arrange_handler?week_first='+week_first+'&week_last='+week_last,
+	            data:$("#form1").serialize(),
+	            dataType: "json",
+	            success: function(msg){
+	            		layer.msg(msg.info);
+	              },
+	            error: function(){
+	            	layer.msg("发生错误");
+	            }
+	        });
+	       return false; 
+	  });
+	
+ }
+</script>
+</body>
+</html>
+

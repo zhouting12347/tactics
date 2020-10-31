@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Suggestion</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+</head>
+<body>
+  <div class="layui-fluid">
+    <div class="layui-col-md12">
+      <div class="layui-card layui-col-md12">
+        <div class="layui-card-body layui-col-md12">
+          <form class="layui-form" id="form1" action="" lay-filter="component-form-group">
+            <div class="layui-form-item">
+              <label class="layui-form-label">用户名:</label>
+              <div class="layui-input-block">
+                <input type="text" placeholder="" autocomplete="off" name="u_username" class="layui-input" lay-verify="required"  value="{$data.u_username}" >
+              </div>
+            </div>
+            
+            <div class="layui-form-item">
+              <label class="layui-form-label">真实姓名:</label>
+              <div class="layui-input-block">
+                <input type="text" placeholder="" autocomplete="off" name="u_realname" class="layui-input" lay-verify="required" value="{$data.u_realname}" >
+              </div>
+            </div>
+            
+            <div class="layui-form-item">
+              <label class="layui-form-label">地铁ID:</label>
+              <div class="layui-input-block">
+                <input type="text" placeholder="" autocomplete="off" name="u_metroID" class="layui-input" lay-verify="required" value="{$data.u_metroID}" >
+              </div>
+            </div>
+            
+             <div class="layui-form-item">
+              <label class="layui-form-label">部门:</label>
+              <div class="layui-input-block">
+                <input type="text" placeholder="" autocomplete="off" name="u_department" class="layui-input" value="{$data.u_department}" >
+              </div>
+            </div>
+            
+            <div class="layui-form-item">
+              <label class="layui-form-label">职位1:</label>
+              <div class="layui-input-block">
+                <select name="u_duty" id="select1">
+                	<option value="">请选择</option>
+                	<option value="编审">编审</option>
+                	<option value="版权审核">版权审核</option>
+                	<option value="领导">领导</option>
+                </select>
+              </div>
+            </div>
+            
+             <div class="layui-form-item">
+              <label class="layui-form-label">职位2:</label>
+              <div class="layui-input-block">
+                <select name="u_duty2" id="select2">
+                	<option value="">请选择</option>
+                	<option value="编审">编审</option>
+                	<option value="版权审核">版权审核</option>
+                	<option value="领导">领导</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="layui-form-item">
+              <label class="layui-form-label">手机:</label>
+              <div class="layui-input-block">
+                <input type="text" placeholder="" autocomplete="off"  name="u_phone"class="layui-input" value="{$data.u_phone}" >
+              </div>
+            </div>
+            
+             <div class="layui-form-item">
+              <label class="layui-form-label">邮箱:</label>
+              <div class="layui-input-block">
+                <input type="email" placeholder=""  autocomplete="off"  name="u_email"class="layui-input" value="{$data.u_email}"  >
+              </div>
+            </div>
+                        
+        <div class="layui-form-item">
+			    <label class="layui-form-label">备注</label>
+			    <div class="layui-input-block">
+			      <input name="u_remark" class="layui-input"  value="{$data.u_remark}">
+			  </div>
+                        
+        <div class="layui-form-item">
+          <label class="layui-form-label">爆料分组:</label>
+          <div class="layui-input-block">
+            <input type="text" placeholder="" name="u_station" class="layui-input" value="{$data.u_station}" >
+          </div>
+        </div>
+
+        <div class="layui-form-item">
+			    <label class="layui-form-label">爆料审核</label>
+			    <div class="layui-input-block">
+			    <if condition="$data.u_ifbaoliaoaudit eq 1">
+			      <input type="radio" name="u_ifbaoliaoaudit" value=1  title="是" checked>
+			      <input type="radio" name="u_ifbaoliaoaudit" value=0  title="否" >
+			    <elseif condition="$data.u_ifbaoliaoaudit eq 0" />
+			    	<input type="radio" name="u_ifbaoliaoaudit" value=1  title="是" >
+			        <input type="radio" name="u_ifbaoliaoaudit" value=0  title="否" checked>
+			    </if>
+			    </div>
+			  </div>
+
+          <div class="layui-form-item">
+			    <label class="layui-form-label">是否使用</label>
+			    <div class="layui-input-block">
+			    <if condition="$data.u_ifuse eq 1">
+			      <input type="radio" name="u_ifuse" value=1  title="是" checked>
+			      <input type="radio" name="u_ifuse" value=0  title="否" >
+			    <elseif condition="$data.u_ifuse eq 0" />
+			    	<input type="radio" name="u_ifuse" value=1  title="是" >
+			        <input type="radio" name="u_ifuse" value=0  title="否" checked>
+			    </if>
+			    </div>
+			  </div>
+            
+            <div class="layui-form-item layui-layout-admin" style="margin-bottom:0;">
+              <div class="layui-input-block">
+                <div class="layui-footer" style="left: 0;">
+                  <button type="submit" class="layui-btn" lay-submit="" lay-filter="component-form-demo1">提交</button>
+                </div>
+              </div>
+            </div>
+            <input type="hidden" name="u_id" value="{$data.u_id}" />
+          </form>
+        </div>
+
+      </div><!-- layui-card -->
+    </div>
+  </div><!-- layui-fluid -->
+  
+ <script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+ <script src="__PUBLIC__/layui/layui.all.js"></script>
+  <script>
+  
+  var duty="{$data.u_duty}";
+  var duty2="{$data.u_duty2}";
+ window.onload=function(){
+	 $("#select1").val(duty);
+	 $("#select2").val(duty2);
+	 layui.form.render('select'); //刷新select选择框渲染
+	 
+	 //保存
+	  $("#form1").submit(function(){
+		  $.ajax({
+	            async: false,
+	            type: "POST",
+	            url:'/index.php/RBAC/rbac_edit_user_handler',
+	            data:$("#form1").serialize(),
+	            dataType: "json",
+	            success: function(msg){
+	            		layer.msg(msg.info);
+	              },
+	            error: function(){
+	            	layer.msg("error");
+	            }
+	        });
+	       return false; 
+	  });
+ }
+  </script>
+</body>
+</html>

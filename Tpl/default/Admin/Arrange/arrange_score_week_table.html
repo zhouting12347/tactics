@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>ClipType</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+</head>
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+	 <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+		 	<form class="layui-form" id="form1" action="__GROUP__/Arrange/arrange_score_week_table" method="post">
+		        <div class="layui-form-item">
+		          <!-- <div class="layui-inline">
+		            <button class="layui-btn layuiadmin-btn-admin layui-btn-normal" style="background-color:#005984;" id="beforeWeek">
+		              <i class="layui-icon layui-icon-left layuiadmin-button-btn"></i> 前一周
+		            </button>
+		          </div>
+		          <div class="layui-inline" style="margin:0 20px;padding-right:10px;font-size:24px;font-weight:bold;color:#2E2E2E;">
+		           {$week[0]} 到 {$week[6]}
+		          </div>
+		          <div class="layui-inline">
+		            <button class="layui-btn layuiadmin-btn-admin layui-btn-normal" style="background-color:#005984;" id="afterWeek">
+		              后一周 <i class="layui-icon layui-icon-right layuiadmin-button-btn"></i>
+		            </button>
+		          </div> -->
+		          <div class="layui-input-inline">
+		              <input type="text" class="layui-input" id="scoreTime"  name="scoreTime" placeholder="请选择日期范围" value="{$scoreTime}">
+		            </div>
+		            <div class="layui-inline">
+			            <button type="submit" class="layui-btn layuiadmin-btn-admin layui-btn-normal" style="background-color:#0080C0;" id="search">
+			              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+			            </button>
+		          </div>
+		        </div>
+		      </form>
+      </div>
+		
+      <div class="layui-card-body">
+      <!-- 工作日评分表 -->
+		<table class="layui-table" id="workScoreTable">
+          <thead>
+           <tr>
+           	  <th rowspan="2" style="text-align: center;">日期</th>
+           	  <th rowspan="2" style="text-align: center;">是否合格</th>
+		      <th colspan="7" style="text-align: center;">早班(00:00-08:30)</th>
+		      <th colspan="8" style="text-align: center;">常日班(08:30-17:15&19:30-24:00)</th>
+		      <th colspan="7" style="text-align: center;">中班(17:15-19:30)</th>
+		    </tr>
+            <tr>
+              <th>值班人员</th>
+              <th>发博量</th>
+              <th>发博超额量</th>
+              <th>回复量</th>
+              <th>回复超额量</th>
+              <th style="font-weight:bold;">基础分</th>
+              <th style="font-weight:bold;">总分</th>
+              
+              <th>值班人员</th>
+              <th>白天发博量</th>
+              <th>晚间发博量</th>
+              <th>发博超额量</th>
+              <th>回复量</th>
+              <th>回复超额量</th>
+              <th style="font-weight:bold;">基础分</th>
+              <th style="font-weight:bold;">总分</th>
+              
+              <th>值班人员</th>
+              <th>发博量</th>
+              <th>发博超额量</th>
+              <th>回复量</th>
+              <th>回复超额量</th>
+              <th style="font-weight:bold;">基础分</th>
+              <th style="font-weight:bold;">总分</th>
+            </tr>
+          </thead>
+          <tbody>
+         	<volist name="workScore" id="vo">
+        		<tr>
+        			<td>{$vo.date}</td>
+        			<if condition="$vo.result eq -1">
+        				<td></td>
+        			<elseif condition="$vo.result eq '不合格'" />
+        				<td style="background-color:#F39999;">{$vo.result}</td>
+        			<elseif condition="$vo.result eq '合格'" /> 
+        				<td style="background-color:#D2F499;">{$vo.result}</td>
+        			<else/>
+        				<td></td>
+        			</if>
+        			<td>{$vo.name1}</td>
+        			<if condition="$vo.weibo1 eq -1">
+        				<td></td>
+        			<elseif condition="$vo.weibo1 lt 3" />
+        				<td style="background-color:#F39999;">{$vo.weibo1}</td>
+        			<elseif condition="$vo.weibo1 gt 3" />
+						<td style="background-color:#D2F499;">{$vo.weibo1}</td>
+					<elseif condition="$vo.weibo1 eq 3" /> 
+						<td>{$vo.weibo1}</td>
+					</if>
+					
+					<if condition="$vo.overWeibo1 eq 0">
+						<td></td>
+					<elseif condition="$vo.overWeibo1 gt 0" />
+        				<td style="background-color:#1e9fff;">{$vo.overWeibo1}</td>
+        			<elseif condition="$vo.overWeibo1 lt 0" />
+        				<td style="background-color:#ffbb22;">{$vo.overWeibo1}</td>
+        			</if>
+        			
+					<if condition="$vo.comment1 eq -1">
+        				<td></td>
+        			<elseif condition="$vo.comment1 lt 5" />
+        				<td style="background-color:#F39999;">{$vo.comment1}</td>
+        			<elseif condition="$vo.comment1 gt 5" />
+						<td style="background-color:#D2F499;">{$vo.comment1}</td>
+					<elseif condition="$vo.comment1 eq 5" /> 
+						<td>{$vo.comment1}</td>
+					</if>
+					
+					<if condition="$vo.overComment1 eq 0">
+						<td></td>
+					<elseif condition="$vo.overComment1 gt 0" />
+        				<td style="background-color:#1e9fff;">{$vo.overComment1}</td>
+        			<elseif condition="$vo.overComment1 lt 0" />
+        				<td style="background-color:#ffbb22;">{$vo.overComment1}</td>
+        			</if>
+					
+					<if condition="$vo.basescore1 eq -1">
+        				<td></td>
+        			<elseif condition="$vo.basescore1 eq 100" />
+        				<td>{$vo.basescore1}</td>
+        			<else/> 
+        				<td style="background-color:#F39999;">{$vo.basescore1}</td>
+        			</if>
+        			<td style="font-weight:bold;">{$vo.score1}</td> 
+        			
+        			
+        			
+        			<td>{$vo.name2}</td>
+        			<if condition="$vo.weibo2_1 eq -1">
+        				<td></td>
+        			<elseif condition="$vo.weibo2_1 lt 6" />
+        				<td style="background-color:#F39999;">{$vo.weibo2_1}</td>
+        			<elseif condition="$vo.weibo2_1 gt 6" />
+						<td style="background-color:#D2F499;">{$vo.weibo2_1}</td>
+					<elseif condition="$vo.weibo2_1 eq 6" /> 
+						<td>{$vo.weibo2_1}</td>
+					</if>
+					
+        			<if condition="$vo.weibo2_2 eq -1">
+        				<td></td>
+        			<elseif condition="$vo.weibo2_2 lt 2" />
+        				<td style="background-color:#F39999;">{$vo.weibo2_2}</td>
+        			<elseif condition="$vo.weibo2_2 gt 2" />
+						<td style="background-color:#D2F499;">{$vo.weibo2_2}</td>
+					<elseif condition="$vo.weibo2_2 eq 2" /> 
+						<td>{$vo.weibo2_2}</td>
+					</if>
+					
+					<if condition="$vo.overWeibo2 eq 0">
+						<td></td>
+					<elseif condition="$vo.overWeibo2 gt 0" />
+        				<td style="background-color:#1e9fff;">{$vo.overWeibo2}</td>
+        			<elseif condition="$vo.overWeibo2 lt 0" />
+        				<td style="background-color:#ffbb22;">{$vo.overWeibo2}</td>
+        			</if>
+					
+        			<if condition="$vo.comment2 eq -1">
+        				<td></td>
+        			<elseif condition="$vo.comment2 lt 5" />
+        				<td style="background-color:#F39999;">{$vo.comment2}</td>
+        			<elseif condition="$vo.comment2 gt 5" />
+						<td style="background-color:#D2F499;">{$vo.comment2}</td>
+					<elseif condition="$vo.comment2 eq 5" /> 
+						<td>{$vo.comment2}</td>
+					</if>
+					
+					<if condition="$vo.overComment2 eq 0">
+						<td></td>
+					<elseif condition="$vo.overComment2 gt 0" />
+        				<td style="background-color:#1e9fff;">{$vo.overComment2}</td>
+        			<elseif condition="$vo.overComment2 lt 0" />
+        				<td style="background-color:#ffbb22;">{$vo.overComment2}</td>
+        			</if>
+					
+        			<if condition="$vo.basescore2 eq -1">
+        				<td></td>
+        			<elseif condition="$vo.basescore2 eq 100" />
+        				<td>{$vo.basescore2}</td>
+        			<else/> 
+        				<td style="background-color:#F39999;">{$vo.basescore2}</td>
+        			</if>
+					<td style="font-weight:bold;">{$vo.score2}</td>        			
+					
+					
+        			<td>{$vo.name3}</td>
+        			<if condition="$vo.weibo3 eq -1">
+        				<td></td>
+        			<elseif condition="$vo.weibo3 lt 4" />
+        				<td style="background-color:#F39999;">{$vo.weibo3}</td>
+        			<elseif condition="$vo.weibo3 gt 4" />
+						<td style="background-color:#D2F499;">{$vo.weibo3}</td>
+					<elseif condition="$vo.weibo3 eq 4" /> 
+						<td>{$vo.weibo3}</td>
+					</if>
+					
+					<if condition="$vo.overWeibo3 eq 0">
+						<td></td>
+					<elseif condition="$vo.overWeibo3 gt 0" />
+        				<td style="background-color:#1e9fff;">{$vo.overWeibo3}</td>
+        			<elseif condition="$vo.overWeibo3 lt 0" />
+        				<td style="background-color:#ffbb22;">{$vo.overWeibo3}</td>
+        			</if>
+					
+        			<if condition="$vo.comment3 eq -1">
+        				<td></td>
+        			<elseif condition="$vo.comment3 lt 5" />
+        				<td style="background-color:#F39999;">{$vo.comment3}</td>
+        			<elseif condition="$vo.comment3 gt 5" />
+						<td style="background-color:#D2F499;">{$vo.comment3}</td>
+					<elseif condition="$vo.comment3 eq 5" /> 
+						<td>{$vo.comment3}</td>
+					</if>
+					
+					<if condition="$vo.overComment3 eq 0">
+						<td></td>
+					<elseif condition="$vo.overComment3 gt 0" />
+        				<td style="background-color:#1e9fff;">{$vo.overComment3}</td>
+        			<elseif condition="$vo.overComment3 lt 0" />
+        				<td style="background-color:#ffbb22;">{$vo.overComment3}</td>
+        			</if>
+					
+					<if condition="$vo.basescore3 eq -1">
+        				<td></td>
+        			<elseif condition="$vo.basescore3 eq 100" />
+        				<td>{$vo.basescore3}</td>
+        			<else/> 
+        				<td style="background-color:#F39999;">{$vo.basescore3}</td>
+        			</if>
+        			<td style="font-weight:bold;">{$vo.score3}</td>
+        		</tr>
+         	</volist>
+          </tbody>
+        </table>
+        <blockquote class="layui-elem-quote layui-quote-nm">
+        	早班标准：信息3条、回复5条；常日班标准：白天信息6条、晚间信息2条、回复5条；中班标准：信息4条、回复5条。 
+			<br>评分标准：信息发布占比70%，少（多）发一条扣（加）5分；信息回复占比30%，少（多）发一条扣（加）2分
+		</blockquote>
+      </div>
+      
+      <!-- 节假日加班评分表 -->
+      <div class="layui-card-body">
+		<table class="layui-table" id="holidayScoreTable">
+          <thead>
+           <tr>
+           	  <th rowspan="2" style="text-align: center;">日期</th>
+           	  <th rowspan="2" style="text-align: center;">是否合格</th>
+		      <th colspan="7" style="text-align: center;">节假日值班</th>
+		    </tr>
+            <tr>
+              <th>值班人员</th>
+              <th>发博量</th>
+              <th>发博超额量</th>
+              <th>回复量</th>
+              <th>回复超额量</th>
+              <th style="font-weight:bold;">基础分</th>
+              <th style="font-weight:bold;">总分</th>
+            </tr>
+          </thead>
+          <tbody>
+         	<volist name="holidayScore" id="vo">
+        		<tr>
+        			<td>{$vo.date}</td>
+        			<if condition="$vo.result eq -1">
+        				<td></td>
+        			<elseif condition="$vo.result eq '不合格'" />
+        				<td style="background-color:#F39999;">{$vo.result}</td>
+        			<elseif condition="$vo.result eq '合格'" /> 
+        				<td style="background-color:#D2F499;">{$vo.result}</td>
+        			</if>
+        			<td>{$vo.name}</td>
+        			<if condition="$vo.weibo eq -1">
+        				<td></td>
+        			<elseif condition="$vo.weibo lt 6" />
+        				<td style="background-color:#F39999;">{$vo.weibo}</td>
+        			<elseif condition="$vo.weibo gt 6" />
+						<td style="background-color:#D2F499;">{$vo.weibo}</td>
+					<elseif condition="$vo.weibo eq 6" /> 
+						<td>{$vo.weibo}</td>
+					</if>
+					
+					<if condition="$vo.overWeibo eq 0">
+						<td></td>
+					<elseif condition="$vo.overWeibo gt 0" />
+        				<td style="background-color:#1e9fff;">{$vo.overWeibo}</td>
+        			<elseif condition="$vo.overWeibo lt 0" />
+        				<td style="background-color:#ffbb22;">{$vo.overWeibo}</td>
+        			</if>
+					
+        			<if condition="$vo.comment eq -1">
+        				<td></td>
+        			<elseif condition="$vo.comment lt 4" />
+        				<td style="background-color:#F39999;">{$vo.comment}</td>
+        			<elseif condition="$vo.comment gt 4" />
+						<td style="background-color:#D2F499;">{$vo.comment}</td>
+					<elseif condition="$vo.comment eq 4" /> 
+						<td>{$vo.comment}</td>
+					</if>
+					
+					<if condition="$vo.overComment eq 0">
+						<td></td>
+					<elseif condition="$vo.overComment gt 0" />
+        				<td style="background-color:#1e9fff;">{$vo.overComment}</td>
+        			<elseif condition="$vo.overComment lt 0" />
+        				<td style="background-color:#ffbb22;">{$vo.overComment}</td>
+        			</if>
+					
+					<if condition="$vo.basescore eq -1">
+						<td></td>
+					<elseif condition="$vo.basescore eq 100" />
+        				<td>{$vo.basescore}</td>
+        			<else/> 
+        				<td style="background-color:#F39999;">{$vo.basescore}</td>
+        			</if>
+        			<td style="font-weight:bold;">{$vo.score}</td>
+        		</tr>
+         	</volist>
+          </tbody>
+        </table>
+        <blockquote class="layui-elem-quote layui-quote-nm">
+        	节假日标准：信息6条、回复4条。
+			<br>评分标准：信息发布占比70%，少（多）发一条扣（加）12分；信息回复占比30%，少（多）发一条扣（加）7分
+		</blockquote>
+      </div>
+      
+      <div class="layui-card-body">
+      		<fieldset class="layui-elem-field layui-field-title site-title">
+		      <legend>汇总统计</legend>
+		    </fieldset>
+		    <table class="layui-table">
+		    	<thead>
+		    		<tr>
+		    			<th>日期</th>
+		    			<th>周期</th>
+		    			<th>发博数</th>
+		    			<th>发博超额量</th>
+		    			<th>回复数</th>
+		    			<th>回复超额量</th>
+		    			<th>合格天数</th>
+		    			<th>不合格天数</th>
+		    			<th>合格率</th>
+		    		</tr>
+		    	</thead>
+		    	<tbody>
+		    		<tr>
+		    			<td>{$summary.date}</td>
+		    			<td>{$summary.dayCount}</td>
+		    			<td>{$summary.weiboCount}</td>
+		    			
+		    			<if condition="$summary.overWeiboCount eq 0">
+							<td></td>
+						<elseif condition="$summary.overWeiboCount gt 0" />
+	        				<td style="background-color:#1e9fff;">{$summary.overWeiboCount}</td>
+	        			<elseif condition="$summary.overWeiboCount lt 0" />
+	        				<td style="background-color:#ffbb22;">{$summary.overWeiboCount}</td>
+	        			</if>
+		    			<td>{$summary.commentCount}</td>
+		    			
+		    			<if condition="$summary.overCommentCount eq 0">
+							<td></td>
+						<elseif condition="$summary.overCommentCount gt 0" />
+	        				<td style="background-color:#1e9fff;">{$summary.overCommentCount}</td>
+	        			<elseif condition="$summary.overCommentCount lt 0" />
+	        				<td style="background-color:#ffbb22;">{$summary.overCommentCount}</td>
+	        			</if>
+	        			
+		    			<td>{$summary.qualifiedCount}</td>
+		    			<td>{$summary.unqualifiedCount}</td>
+		    			<td>{$summary.qualifiedRate}</td>
+		    		</tr>
+		    	</tbody>
+		    </table>
+		    <blockquote class="layui-elem-quote layui-quote-nm">
+        		工作日标准：信息15条、回复15条；
+				<br>节假日标准：信息6条、回复4条。
+			</blockquote>
+      </div>
+      
+      <div class="layui-card-body">
+      		<fieldset class="layui-elem-field layui-field-title site-title">
+		      <legend>个人统计</legend>
+		    </fieldset>
+		    <table class="layui-table">
+		    	<thead>
+		    		<tr>
+		    			<th>日期</th>
+		    			<th>值班人员</th>
+		    			<th>班次</th>
+		    			<th>发博数</th>
+		    			<th>回复数</th>
+		    			<th>总班次</th>
+		    			<th>合格次数</th>
+		    			<th>不合格次数</th>
+		    			<th>合格率</th>
+		    			<th>个人总分</th>
+		    			<th>个人平均分</th>
+		    		</tr>
+		    	</thead>
+		    	<tbody>
+		    		<volist name="personal" id="vo">
+		    			<tr>
+		    				<td>{$vo.date}</td>
+		    				<td>{$vo.name}</td>
+		    				<td>{$vo.banci}</td>
+		    				<td>{$vo.weiboCount}</td>
+		    				<td>{$vo.commentCount}</td>
+		    				<td>{$vo.totalBanci}</td>
+		    				<td>{$vo.qualifiedCount}</td>
+		    				<td>{$vo.unqualifiedCount}</td>
+		    				<td>{$vo.qualifiedRate}</td>
+		    				<td>{$vo.totalScore}</td>
+		    				<td>{$vo.avgScore}</td>
+		    			</tr>
+		    		</volist>
+		    	</tbody>
+		    </table>
+      </div>
+      
+    </div>
+  </div>
+
+
+ <script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+ <script src="__PUBLIC__/layui/layui.all.js"></script>
+ <script src="__PUBLIC__/js/vds.js"></script>
+<script>
+//var week_first="{$week[0]}";
+//var week_last="{$week[6]}";
+//var today="{$today}";
+ window.onload=function(){
+	/* //下一周
+	$("#afterWeek").click(function(){
+		var url="__GROUP__/Arrange/arrange_score_week_table?action=after&week_first="+week_first;
+		parent.$("#myIframe").attr("src",url);
+	});
+	
+	//上一周
+	$("#beforeWeek").click(function(){
+		var url="__GROUP__/Arrange/arrange_score_week_table?action=before&week_first="+week_first;
+		parent.$("#myIframe").attr("src",url);
+	}); */
+	
+	//日期范围
+    layui.laydate.render({
+      elem: '#scoreTime'
+      ,range:true
+    });
+	
+	//监听单元格事件
+	$("#workScoreTable").delegate("td","click",function(){
+		  var tdCount=parseInt($(this).html());
+		  if(tdCount<1||tdCount>50||isNaN(tdCount)){
+			  return false;
+		  }
+		  var scoreDate=$(this).parent().children('td').eq(0).html();
+		  var tdIndex=$(this).index();
+		  var scoreStartTime;
+		  var scoreEndTime;
+		  var scoreStartTime2;
+		  var scoreEndTime2;
+		  var type;
+		  var flag=0;
+		  switch(tdIndex){
+			   //早班微博
+		  		case 3:
+			   	scoreStartTime="00:00:01";
+			   	scoreEndTime="08:30:00";
+			   	type="weibo";
+				flag=1;
+			   	break;
+			  //早班评论
+			   case 5:
+				   	scoreStartTime="00:00:01";
+				   	scoreEndTime="08:30:00";
+				   	type="comment";
+					flag=1;
+				   	break;
+				   	
+			//常日班微博  	
+			   case 10:
+				   	scoreStartTime="08:30:01";
+				   	scoreEndTime="17:15:00";
+				   	type="weibo";
+					flag=1;
+				   	break;
+			   case 11:
+				   	scoreStartTime="19:30:01";
+				   	scoreEndTime="23:59:59";
+				   	type="weibo";
+					flag=1;
+				   	break;
+			   case 13:
+				   	scoreStartTime="08:30:01";
+				   	scoreEndTime="17:15:00";
+				   	scoreStartTime2="19:30:01";
+				   	scoreEndTime2="23:59:59";
+				   	type="comment2";
+					flag=1;
+				   	break;
+				
+			//中班
+			   case 18:
+					scoreStartTime="17:15:01";
+				   	scoreEndTime="19:30:00";
+				   	type="weibo";
+					flag=1;
+				   	break;
+			   case 20:
+					scoreStartTime="17:15:01";
+				   	scoreEndTime="19:30:00";
+				   	type="comment";
+					flag=1;
+				   	break;
+		  }
+		  if(!flag){
+			  return false;
+		  }
+		  layer.open({
+	          title:'微博详细信息'
+	          ,type: 2
+	          ,content: '/index.php/Arrange/arrange_get_weibo_data?type='+type+'&scoreDate='+scoreDate+'&scoreStartTime='+scoreStartTime+'&scoreStartTime2='+scoreStartTime2+'&scoreEndTime='+scoreEndTime+'&scoreEndTime2='+scoreEndTime2	        		  
+	          ,shadeClose: true
+	          ,area:screen() < 2 ? ['60%', '60%'] : ['1200px', '650px']
+	        });
+	});
+	
+	//监听单元格事件
+	$("#holidayScoreTable").delegate("td","click",function(){
+		  var tdCount=parseInt($(this).html());
+		  if(tdCount<1||tdCount>50||isNaN(tdCount)){
+			  return false;
+		  }
+		  var flag=0;
+		  var scoreDate=$(this).parent().children('td').eq(0).html();
+		  var tdIndex=$(this).index();
+		  var scoreStartTime;
+		  var scoreEndTime;
+		  var type;
+		  switch(tdIndex){
+			//值班
+			   case 3:
+				    scoreStartTime="08:00:00";
+				   	scoreEndTime="22:00:00";
+				   	type="weibo";
+				   	flag=1;
+				   break;
+			   case 5:
+				   scoreStartTime="08:00:00";
+				   	scoreEndTime="22:00:00";
+				   	type="comment";
+				   	flag=1;
+				   break;
+		  }
+		  if(!flag){
+			  return false;
+		  }
+		  layer.open({
+	          title:'微博详细信息'
+	          ,type: 2
+	          ,content: '/index.php/Arrange/arrange_get_weibo_data?type='+type+'&scoreDate='+scoreDate+'&scoreStartTime='+scoreStartTime+'&scoreEndTime='+scoreEndTime       		  
+	          ,shadeClose: true
+	          ,area:screen() < 2 ? ['60%', '60%'] : ['1200px', '650px']
+	        });
+	});
+	
+ }
+</script>
+</body>
+</html>
+

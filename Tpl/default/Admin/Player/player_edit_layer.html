@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Edit</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+</head>
+<body>
+  <div class="layui-fluid">
+    <div class="layui-col-md12">
+      <div class="layui-card layui-col-md12">
+        <div class="layui-card-body layui-col-md12">
+          <form class="layui-form" action=""  id="form1" lay-filter="component-form-group">
+          
+           <div class="layui-form-item">
+              <label class="layui-form-label">ID</label>
+              <div class="layui-input-block">
+              	<input type="text" name="P_MID" id="P_MID" class="layui-input" readonly="readonly" value="{$player.P_MID}">
+              </div>
+            </div>
+            
+            <div class="layui-form-item">
+              <label class="layui-form-label">S/N</label>
+              <div class="layui-input-block">
+                <input type="text" name="P_SN" id="P_SN" class="layui-input" readonly="readonly" value="{$player.P_SN}">
+              </div>
+            </div>
+            
+            <div class="layui-form-item">
+              <label class="layui-form-label">Model</label>
+              <div class="layui-input-block">
+                <input type="text" name="P_Model" id="P_Model"  class="layui-input" readonly="readonly" value="{$player.P_Model}">
+              </div>
+            </div>
+          
+            <div class="layui-form-item">
+              <label class="layui-form-label">Address</label>
+              <div class="layui-input-block">
+                <input type="text" name="P_Location" lay-verify="title" autocomplete="off" placeholder="" class="layui-input" value="{$player.P_Location}">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">Premises</label>
+              <div class="layui-input-block">
+               <select name="PT_ID" lay-verify="" id="PT_ID">
+               	<option value="">Select</option>
+               	<volist name="playertype" id="vo">
+		        	<if condition="$vo.PT_ID eq $player['PT_ID']">
+		        		<option value={$vo.PT_ID} selected="selected" >{$vo.PT_Name}</option>
+		        	<else />
+		        		<option value="{$vo.PT_ID}">{$vo.PT_Name}</option>
+		        	</if>
+		        </volist>	        
+	            </select>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">Area</label>
+              <div class="layui-input-block">
+               <select name="A_ID" lay-verify="">
+	              <option value="">Select</option>
+	              <volist name="area" id="vo">
+	              	<if condition="$vo.A_ID eq $player['A_ID']">
+		        		<option value={$vo.A_ID} selected="selected" >{$vo.A_Name}</option>
+		        	<else />
+		        		<option value="{$vo.A_ID}">{$vo.A_Name}</option>
+		        	</if>
+	              </volist>
+	            </select>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">Owner</label>
+              <div class="layui-input-block">
+                <select name="U_ID" lay-verify="">
+	              <option value="">Select</option>
+	              <volist name="user" id="vo">
+	              	<if condition="$vo.U_ID eq $player['U_ID']">
+		        		<option value={$vo.U_ID} selected="selected" >{$vo.U_Username}</option>
+		        	<else />
+		        		<option value="{$vo.U_ID}">{$vo.U_Username}</option>
+		        	</if>
+	              </volist>
+	            </select>
+              </div>
+            </div>
+         
+            <div class="layui-form-item">
+              <label class="layui-form-label">Validity</label>
+              <div class="layui-input-block">
+                <select name="P_Enabled" id="select1"  lay-verify="">
+                  <option value="">Select</option>
+                  <option value="1">Enabled</option>
+                  <option value="0">Disabled</option>
+                  <option value="2">Maintenance</option>
+                </select>
+              </div>
+      
+            <div class="layui-form-item">
+              <label class="layui-form-label">Screen size</label>
+              <div class="layui-input-block">
+                <input type="text" name="P_ScreenSize" lay-verify="title" autocomplete="off" placeholder="" class="layui-input" value="{$player.P_ScreenSize}">
+              </div>
+            </div>
+            <div class="layui-form-item layui-form-text" style="margin-bottom:0;">
+              <label class="layui-form-label">Remark</label>
+              <div class="layui-input-block">
+                <textarea name="P_Remark" placeholder="" class="layui-textarea">{$player.P_Remark}</textarea>
+              </div>
+            </div>
+            <div class="layui-form-item layui-layout-admin" style="margin-bottom:0;">
+              <div class="layui-input-block">
+                <div class="layui-footer" style="left: 0;">
+                  <button type="submit" class="layui-btn" lay-submit="" lay-filter="component-form-demo1">Submit</button>
+                </div>
+              </div>
+            </div>
+            <input type="hidden" name="P_ID" value="{$player.P_ID}" />
+          </form>
+        </div>
+
+      </div><!-- layui-card -->
+    </div>
+  </div><!-- layui-fluid -->
+  
+ <script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+ <script src="__PUBLIC__/layui/layui.all.js"></script>
+ <script type="text/javascript">
+ var enabled="{$player.P_Enabled}";
+ window.onload=function(){
+ $("#select1").val(enabled);
+ layui.form.render("select");
+		 //保存
+		  $("#form1").submit(function(e){
+			  var PT_ID=$("#PT_ID").val();
+			  if(!PT_ID){
+				  layer.msg("Please select type");
+				  return false;
+			  }
+			  
+			  $.ajax({
+		            async: false,
+		            type: "POST",
+		            url:'/index.php/Player/player_edit_handler',
+		            data:$("#form1").serialize(),
+		            dataType: "json",
+		            success: function(msg){
+		            		layer.msg(msg.info);
+		              },
+		            error: function(){
+		            	layer.msg("error");
+		            }
+		        });
+		       return false; 
+		  });
+	}
+ </script>
+</body>
+</html>

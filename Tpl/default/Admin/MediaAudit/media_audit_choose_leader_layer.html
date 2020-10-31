@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Edit</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+</head>
+<body>
+  <div class="layui-fluid">
+    <div class="layui-col-md12" style="padding:0 5px;">
+      <div class="layui-card">
+      <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+        <div class="layui-form-item">
+          <div class="layui-inline" style="width:300px;">
+            <input type="text" id="keyword" placeholder="搜索..." autocomplete="off" class="layui-input">
+          </div>
+          <div class="layui-inline">
+            <button class="layui-btn layuiadmin-btn-admin layui-btn-normal" style="background-color:#0080C0;" id="search">
+              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+    <div class="layui-col-md6" style="padding:5px;">
+      <div class="layui-card">
+        <div class="layui-card-body layui-form">
+          <table class="layui-table" id="leaderTable" ></table>
+        </div>
+        <div class="layui-card-body layui-card-header" style="padding-bottom:0;">
+          <button type="button" class="layui-btn layui-layout-right" style="margin-right:15px;background-color:#0080C0;" id="add">
+            向右添加
+          </button>
+        </div>
+      </div><!-- layui-card -->
+    </div><!-- layui-col-md6 -->
+
+    <div class="layui-col-md6" style="padding:5px;">
+      <div class="layui-card">
+        <div class="layui-card-body layui-form">
+         <table class="layui-table" id="leaderSelectedTable"   lay-filter="myTable"></table>
+        </div>
+        <div class="layui-card-body layui-card-header" style="padding-bottom:0;">
+          <button type="button" class="layui-btn layui-layout-right" style="margin-right:15px;background-color:#9A9A9A;" id="delete">
+            清空选项
+          </button>
+        </div>
+      </div><!-- layui-card -->
+    </div><!-- layui-col-md6 -->
+
+    <!-- <div class="layui-form-item layui-layout-admin" style="margin-bottom:0;">
+      <div class="layui-input-block">
+        <div class="layui-footer" style="left: 0;">
+          <button class="layui-btn layui-btn-danger"  id="close" lay-submit="" lay-filter="component-form-demo1" style="margin-right:20px;">关闭</button>
+        </div>
+      </div>
+    </div> -->
+  </div><!-- layui-fluid -->
+  <script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+  <script src="__PUBLIC__/layui/layui.all.js"></script>
+  <script src="__PUBLIC__/js/vds.js"></script> 
+  <script>
+  var d_id="{$d_id}";
+ window.onload=function(){
+ 	//领导table
+	var table=layui.table;
+	  table.render({
+	    elem: '#leaderTable'
+	    ,url:'/index.php/Table/getTableData'
+	    ,even:true
+	    ,height:"225"
+		,limit:20
+	    ,limits:[20,30,50,100]
+	    ,id:'leaderTable'
+	    ,where:{tableName:"user",tableType:"leader"}
+	    ,cols: [[
+			   {type:'checkbox'}
+	          ,{field:'u_realname',title: '姓名'}
+	          ,{field:'u_department',title: '部门'}
+	          ,{field:'u_duty',title: '职位'}
+	    ]]
+	    ,done: function(res, curr, count){
+	      }
+	  });
+	  
+	//已选领导table
+	var table=layui.table;
+	  table.render({
+	    elem: '#leaderSelectedTable'
+	    ,url:'/index.php/Table/getTableData'
+	    ,even:true
+	    ,height:"225"
+		,limit:20
+	    ,limits:[20,30,50,100]
+	    ,id:'leaderSelectedTable'
+	    ,where:{tableName:"leaderauditlist",tableType:"leaderSelected",d_id:d_id}
+	    ,cols: [[
+			   {type:'checkbox'}
+	          ,{field:'u_realname',title: '姓名'}
+	          ,{field:'u_department',title: '部门'}
+	          ,{field:'u_duty',title: '职位'}
+	          ,{field:'action', title: '操作',width:120,align:'center',toolbar: '#tableBar'}
+	    ]]
+	    ,done: function(res, curr, count){
+	      }
+	  });
+	 
+	//监听单元格事件
+	  table.on('tool(myTable)', function(obj){
+		var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+	    var data = obj.data;
+	    var d_id=data.d_id;
+	    var num=data.l_num;
+	    var userID=data.l_userID
+	    if(layEvent=='up'){
+			  $.ajax({
+		            type: "POST",
+		            url:'/index.php/MediaAudit/media_audit_move_leader_handler?move=up&d_id='+d_id+"&num="+num+"&userID="+userID,
+		            dataType: "json",
+		            success: function(msg){
+		            	//layer.msg(msg.info);
+		            	layui.table.reload("leaderSelectedTable");
+		            },
+		            error: function(){
+		            	layer.msg("发送错误");
+		            }
+		        });
+		}else if(layEvent=="down"){
+			  $.ajax({
+		            type: "POST",
+		            url:'/index.php/MediaAudit/media_audit_move_leader_handler?move=down&d_id='+d_id+"&num="+num+"&userID="+userID,
+		            dataType: "json",
+		            success: function(msg){
+		            	//layer.msg(msg.info);
+		            	layui.table.reload("leaderSelectedTable");
+		            },
+		            error: function(){
+		            	layer.msg("发送错误");
+		            }
+		        });
+		}
+	   });
+	  
+	  //添加到领导选择表
+	  $("#add").click(function(){
+		  var checkStatus=table.checkStatus('leaderTable');
+		  if(checkStatus.data.length<1){
+			  layer.msg("选择至少一个领导");
+			  return false;
+		  }
+		  $.ajax({
+	            async: false,
+	            type: "POST",
+	            url:'/index.php/MediaAudit/media_audit_choose_leader_handler?d_id='+d_id,
+	            data:checkStatus,
+	            dataType: "json",
+	            success: function(msg){
+	            		//layer.msg(msg.info);
+	            		if(msg.status==1){
+	            			//刷新documentTable
+	            			layui.table.reload("leaderSelectedTable");
+	            		}
+	              },
+	            error: function(){
+	            	layer.msg("发生错误");
+	            }
+	        });
+	  });
+	  
+	  //删除已选择的领导表
+	  $("#delete").click(function(){
+		  var checkStatus=table.checkStatus('leaderSelectedTable');
+		  if(checkStatus.data.length<1){
+			  layer.msg("请选择需要删除的条目");
+			  return false;
+		  }
+		  $.ajax({
+	            async: false,
+	            type: "POST",
+	            url:'/index.php/MediaAudit/media_audit_delete_leader_handler?d_id='+d_id,
+	            data:checkStatus,
+	            dataType: "json",
+	            success: function(msg){
+	            		//layer.msg(msg.info);
+	            		if(msg.status==1){
+	            			//刷新documentTable
+	            			layui.table.reload("leaderSelectedTable");
+	            		}
+	              },
+	            error: function(){
+	            	layer.msg("发生错误");
+	            }
+	        });
+	  });
+	  
+	  //查询
+	  $("#search").click(function(){
+			 var keyword=$("#keyword").val();
+			 layui.table.reload("leaderTable",{where:
+			  	{keyword:keyword}
+			  });
+		});
+	  
+	  //关闭
+	  $("#close").click(function(){
+		  
+	  });
+	  
+ }
+
+  </script>
+<script type="text/html" id="tableBar">
+<div>
+   <button class="layui-btn layui-btn-sm" data-type="OrderSearch" style="background-color:#DD006F;" title="Order Search" lay-event="up">
+        <i class="layui-icon">&#xe619;</i>
+   </button>
+   <button class="layui-btn layui-btn-sm" data-type="edit" style="background-color:#0080C0;" title="Edit" lay-event="down">
+      <i class="layui-icon">&#xe61a;</i>
+  </button>
+</div>
+</script>
+</body>
+</html>

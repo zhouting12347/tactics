@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Edit</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+</head>
+<body>
+  <div class="layui-fluid">
+    <div class="layui-col-md12">
+      <div class="layui-card layui-col-md12">
+        <div class="layui-card-body layui-col-md12">
+          <form class="layui-form" id="form1" action="" lay-filter="component-form-group">
+            <div class="layui-form-item">
+              <label class="layui-form-label">Name</label>
+              <div class="layui-input-block">
+                <input type="text" lay-verify="title"  required name="C_Title" class="layui-input" value="{$clip.C_Title}">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">Video type</label>
+              <div class="layui-input-block">
+                <select name="CT_ID" id="CT_ID"  lay-verify="">
+                  <option value="">Select</option>
+                  <volist name="cliptype" id="vo">
+                  	<if condition="$vo.CT_ID eq $clip['CT_ID']">
+              			<option value="{$vo.CT_ID}" selected="selected">{$vo.CT_Name}</option>
+              		<else />
+              			<option value="{$vo.CT_ID}">{$vo.CT_Name}</option>
+              		</if>
+             	 </volist>
+                </select>
+              </div>
+            </div>
+            
+            <div class="layui-form-item">
+		    <label class="layui-form-label">Blank filled</label>
+		    <div class="layui-input-block">
+		      <if condition="$clip.C_IfDP eq 1">
+		     	 <input type="radio" name="C_IfDP" value="1" title="Yes" checked>
+		     	 <input type="radio" name="C_IfDP" value="0" title="No">
+		      <else />
+		      	 <input type="radio" name="C_IfDP" value="1" title="Yes">
+		     	 <input type="radio" name="C_IfDP" value="0" title="No" checked>
+		      </if>
+		    </div>
+		  </div>
+            
+            <div class="layui-form-item layui-form-text" style="margin-bottom:0;">
+              <label class="layui-form-label">Remark</label>
+              <div class="layui-input-block">
+                <textarea name="C_Remark" class="layui-textarea">{$clip.C_Remark}</textarea>
+              </div>
+            </div>
+            <div class="layui-form-item layui-layout-admin" style="margin-bottom:0;">
+              <div class="layui-input-block">
+                <div class="layui-footer" style="left: 0;">
+                  <button type="submit" class="layui-btn" lay-submit="" lay-filter="component-form-demo1">Submit</button>
+                </div>
+              </div>
+            </div>
+            <input type="hidden" name="C_ID" value="{$clip.C_ID}" />
+          </form>
+        </div>
+
+      </div><!-- layui-card -->
+    </div>
+  </div><!-- layui-fluid -->
+  
+<script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+<script src="__PUBLIC__/layui/layui.all.js"></script>
+<script>
+window.onload=function(){
+	 //保存
+	  $("#form1").submit(function(e){
+		  if(!$("#CT_ID").val()){
+			  layer.msg("Video type can not be empty");
+			  return false;
+		  }
+		  $.ajax({
+	            async: false,
+	            type: "POST",
+	            url:'/index.php/Clips/clips_edit_handler',
+	            data:$("#form1").serialize(),
+	            dataType: "json",
+	            success: function(msg){
+	            		layer.msg(msg.info);
+	              },
+	            error: function(){
+	            	layer.msg("error");
+	            }
+	        });
+	       return false; 
+	  });
+}
+</script>
+</body>
+</html>

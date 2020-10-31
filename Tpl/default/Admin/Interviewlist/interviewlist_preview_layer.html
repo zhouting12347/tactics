@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <!-- import CSS -->
+  <link rel="stylesheet" href="__PUBLIC__/css/preview.css">
+</head>
+<body align="center">
+  <div id="app" style="text-align:center;">
+    <div class="title">
+      <div class="txt">
+        <el-row>
+          <el-col :span="1"><div class="grid-contentTitle "></div></el-col>
+          <el-col :span="2"><div class="grid-contentTitle ">
+            <img class="icon" src="__PUBLIC__/css/shmetro.png">
+          </div></el-col>
+          <el-col :span="20"><div class="grid-contentTitle ">
+            <nobr>&nbsp&nbsp&nbsp&nbsp上海轨道交通新闻媒体拍摄采访联系单&nbsp&nbsp&nbsp&nbsp</nobr>
+          </div></el-col>
+          <el-col :span="1"><div class="grid-contentTitle "></div></el-col>
+        </el-row>
+      </div>
+    </div>
+    <div>
+      <el-row style="margin-top:20px;">
+        <el-col :span="1">&nbsp</el-col>
+        <el-col :span="11"><div class="" align="left">编号：{$interviewlist.i_num}</div></el-col>
+        <el-col :span="11"><div class="" align="right">
+            <span>&nbsp&nbsp</span>年<span>&nbsp&nbsp&nbsp&nbsp</span>月<span>&nbsp&nbsp&nbsp&nbsp</span>日
+        </div></el-col>
+        <el-col :span="1">&nbsp</el-col>
+      </el-row>
+    </div>
+    <div class="page">
+      <div class="subpage">
+        <el-row>
+          <el-col :span="5"><div class="grid-content ">单&nbsp&nbsp位</div></el-col>
+          <el-col :span="7"><div class="grid-content ">{$interviewlist.i_company}</div></el-col>
+          <el-col :span="5"><div class="grid-content ">人&nbsp&nbsp数</div></el-col>
+          <el-col :span="7"><div class="grid-content ">{$interviewlist.i_numberOfPeople}</div></el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="5"><div class="grid-content ">姓&nbsp&nbsp名</div></el-col>
+          <el-col :span="7"><div class="grid-content ">{$interviewlist.i_contactMan}</div></el-col>
+          <el-col :span="5"><div class="grid-content ">时&nbsp&nbsp间</div></el-col>
+          <el-col :span="7"><div class="grid-content ">{$interviewlist.i_interviewDate} {$interviewlist.i_interviewTime}</div></el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="5"><div class="grid-content ">电&nbsp&nbsp话</div></el-col>
+          <el-col :span="7"><div class="grid-content ">{$interviewlist.i_contactPhone}</div></el-col>
+          <el-col :span="5"><div class="grid-content ">经办人</div></el-col>
+          <el-col :span="7"><div class="grid-content ">{$interviewlist.i_operator}</div></el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="5"><div class="grid-content ">地点区域</div></el-col>
+          <el-col :span="19"><div class="grid-content ">{$interviewlist.i_area}</div></el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="5"><div class="grid-content1 ">
+            <label>拍摄</label><br>
+            <label>采访</label><br>
+            <label>内容</label><br>
+          </div></el-col>
+          <el-col :span="19"><div class="grid-content2 ">{$interviewlist.i_content}</div></el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="5"><div class="grid-content2 contentLeft">安全承诺</div></el-col>
+          <el-col :span="19"><div class="grid-content2 ">
+            <div class="content2Txt" align=left>
+                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp本人及拍摄采访等随行人员将严格遵守国家法律法规以及《上海市轨道交通管理条例》的规定
+                ，在确保轨道交通生成安全、客流有序的前提下实施拍摄采访行为。承诺确保自身的人身和财产安全。若发生因
+                主观原因导致的不良后果，自愿承担相应及其违带的法律和经济赔偿责任。&nbsp&nbsp
+            </div>
+            <div style="margin-top:20px;">承诺人（签字）：</div>
+          </div></el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="5"><div class="grid-content ">审核签字</div></el-col>
+          <el-col :span="19"><div class="grid-content "></div></el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="5"><div class="grid-content ">备&nbsp&nbsp&nbsp&nbsp注</div></el-col>
+          <el-col :span="19"><div class="grid-content ">{$interviewlist.i_remark}</div></el-col>
+        </el-row>
+      </div>
+    </div>
+    <div>
+      <el-row style="margin-top:10px; font-weight:bold">
+            <el-col :span="1">&nbsp</el-col>
+            <el-col :span="11"><div class="" align="left">
+              <span>注：本单一式两份，原件留经办部门，</span><br>
+              <span>复印件交拍摄采访方。</span>
+            </div></el-col>
+            <el-col :span="11"><div class="" align="right">
+              经办部门（盖章）
+            </div></el-col>
+            <el-col :span="1">&nbsp</el-col>
+          </el-row>
+    </div>
+  </div>
+</body>
+  <!-- import Vue before Element -->
+  <script src="__PUBLIC__/js/vue.js"></script>
+  <!-- import JavaScript -->
+  <script src="__PUBLIC__/js/preview.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      data: function() {
+        return { visible: false }
+      }
+    })
+  </script>
+  <style>
+    body{
+      /* max-width: 960px;
+      min-width: 960px; */
+      align-content: center;
+    }
+    #app{
+    }
+    .title {
+      width: 100%;
+      height: 70px;
+      line-height:70px;
+      background: white;
+      text-align:center;
+      font-size: 4.15vw;
+      font-weight:bold;
+      /* font-size: 50px; */
+    }
+    .icon {
+      vertical-align:middle;
+      max-width: 60px;
+      max-height: 60px;
+    }
+    .page {
+      background-color: white;
+      text-align: center;
+    }
+    .subpage {
+      width: 100%;
+      height: 100%;
+      margin-top: 20px;
+    }
+    .el-row {
+    }
+    .el-col {
+    }
+    .bg-purple {
+      background: #d3dce6;
+    }
+    .bg-purple-light {
+      background: #e5e9f2;
+    }
+    .grid-contentTitle {
+      border-radius: 0px;
+      min-height: 70px;
+      line-height:70px;
+      /* border:1px solid #333;  */
+      margin-right:-1px; 
+      margin-bottom:-1px;
+    }
+    .grid-content {
+      border-radius: 0px;
+      min-height: 70px;
+      line-height:70px;
+      border:1px solid #333; 
+      margin-right:-1px; 
+      margin-bottom:-1px;
+    }
+    .grid-content1 {
+      border-radius: 0px;
+      min-height: 150px;
+      line-height:50px;
+      border:1px solid #333; 
+      margin-right:-1px; 
+      margin-bottom:-1px;
+    }
+    .grid-content2 {
+      border-radius: 0px;
+      min-height: 150px;
+      /* line-height:150px; */
+      border:1px solid #333; 
+      margin-right:-1px; 
+      margin-bottom:-1px;
+    }
+    .contentLeft {
+      line-height:150px;
+    }
+    .content2Txt {
+      margin-top: 10px;
+      margin-left: 10px;
+      margin-right: 10px;
+      line-height:20px;
+      text-align: left;
+    }
+  </style>
+</html>

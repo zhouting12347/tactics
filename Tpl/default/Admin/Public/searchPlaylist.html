@@ -1,0 +1,152 @@
+<include file="Public/header" />
+<body class="no-skin" style="background-color: white;">
+<br>
+						<form class="nav-search" id="nav-search" method="post" action="__GROUP__/Public/searchPlaylist">
+							<p>
+								<input type="hidden" name="isSearch" value="1" />
+								<input type="text" placeholder="开始时间" name="startTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" value="{$startTime}" />
+								<input type="text" placeholder="结束时间" name="endTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" value="{$endTime}"  />
+								<input type="text" placeholder="PID" name="PID"  value="{$PID}"  />
+								<button type="submit" class="btn btn-success btn-sm">查询<i class="ace-icon fa fa-search icon-on-right bigger-110"></i></button>
+							</p>
+						</form>
+					<div class="row">
+						<div class="col-xs-12">
+							<div class="table-header">
+								<i class="ace-icon fa fa-table"></i>&nbsp&nbsp查询结果
+							</div>
+							<!-- <div class="dataTables_borderWrap"> -->
+							<div>
+								<table id="table1" class="table table-striped table-bordered table-hover">
+										<thead>
+											<tr>
+												<th>开始时间</th>
+												<th>结束时间</th>
+												<th>解码器</th>
+												<th>PID</th>
+												<th>PID备注名</th>
+												<th>案件名称</th>
+												<th>入流法院</th>
+												<th>出流法院</th>
+												<th>联系方式</th>
+											</tr>
+										</thead>
+										<tbody>
+										<volist name="playlist" id="vo">
+											<tr>
+												<td>{$vo.P_StartTime}</td>
+												<td>{$vo.P_EndTime}</td>
+												<td>{$vo.P_Decoder}</td>
+												<td>{$vo.P_OutPID}</td>
+												<td>{$vo.L_Comment}</td>
+												<td>{$vo.P_CaseName}</td>
+												<td>{$vo.P_CourtIn}</td>
+												<td>{$vo.P_CourtOut}</td>
+												<td>{$vo.P_RequestContact}</td>
+											</tr>
+										</volist>
+									</tbody>
+								</table>
+							</div><!-- end<div class="dataTables_borderWrap"> -->
+						</div><!-- end col -->
+					</div><!-- end row -->
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<script src="__PUBLIC__/js/bootstrap.min.js"></script>
+
+		<!-- page specific plugin scripts -->
+		<script src="__PUBLIC__/js/jquery.dataTables.min.js"></script>
+		<script src="__PUBLIC__/js/jquery.dataTables.bootstrap.js"></script>
+		
+		<!-- ace scripts -->
+		<script src="__PUBLIC__/js/ace-elements.min.js"></script>
+		<script src="__PUBLIC__/js/ace.min.js"></script>
+		<script src="__PUBLIC__/layer/layer.js"></script>
+		<script src="__PUBLIC__/laypage/laypage.js"></script>
+		<script src="/Public/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript">
+		jQuery(function($){
+			$('#table1').dataTable({
+				stateSave: false,//保存表格状态
+				lengthMenu: [8],
+				language:{
+		            "url": "/Public/font/zh_CN.txt"
+		    	}
+			});
+			
+			//未通过标签
+			$("span[class='label label-danger']").click(function(){
+				var id=$(this).attr('id');
+				var val=$(this).attr('value');
+				layer.tips(val, '#'+id, {
+			    	tips: [2, 'rgb(209,91,71)'],
+				});
+			});
+			
+			//查看
+			$("button[class='btn btn-xs btn-success check']").click(function(){
+				var id=$(this).attr('id');
+				var index = layer.open({
+				    type: 2,
+				    title:"详细内容",
+				    content: '/index.php/MyTask/checkTask?P_ID='+id,
+				    area: ['800px', '850px'],
+				});
+			});
+			
+			//编辑
+			$("button[class='btn btn-xs btn-success edit']").click(function(){
+				var id=$(this).attr('id');
+				var index = layer.open({
+				    type: 2,
+				    title:"详细内容",
+				    content: '/index.php/MyTask/editTask?P_ID='+id,
+				    area: ['800px', '850px'],
+				});
+			});
+			
+			//删除任务
+			$("button[class='btn btn-xs btn-danger']").click(function(){
+				var id=$(this).attr('id');
+				layer.confirm('是否删除该条任务?', {icon: 3, title:'提示'}, function(index){
+					$.ajax({
+						url: '/index.php/MyTask/delTaskHandler?P_ID='+id,
+						dataType: 'json',
+						type: 'GET',
+						success: function(msg) {
+							if(!msg.status){
+								//删除失败
+								layer.alert(msg.info, {icon: 2},function(index){location.reload();}); 
+							}else{
+								//删除成功
+								layer.alert(msg.info, {icon: 1},function(index){location.reload();}); 
+							}
+						}
+					});
+				});
+			});
+			
+			//提交任务(未通过审核的任务)
+			$("button[class='btn btn-xs btn-primary']").click(function(){
+				var id=$(this).attr('id');
+				layer.confirm('是否提交该任务?', {icon: 3, title:'提示'}, function(index){
+					$.ajax({
+						url: '/index.php/MyTask/submitTaskHandler?P_ID='+id,
+						dataType: 'json',
+						type: 'GET',
+						success: function(msg) {
+							if(!msg.status){
+								//提交失败
+								layer.alert(msg.info, {icon: 2},function(index){location.reload();}); 
+							}else{
+								//提交成功
+								layer.alert(msg.info, {icon: 1},function(index){location.reload();}); 
+							}
+						}
+					});
+				}); 
+			});
+			
+		});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>ClipType</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+</head>
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-card-body" style="padding:15px;border-bottom:1px solid #f6f6f6;">
+        <div>
+          <button class="layui-btn layui-btn-lg" data-type="Add" id="add" style="background-color:#00B000;">
+            <i class="layui-icon">&#xe61f;</i>添加用户
+          </button>
+        </div>
+      </div>
+
+      <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+        <div class="layui-form-item">
+          <div class="layui-inline">
+            <input type="text" id="keyword" placeholder="关键字" autocomplete="off" class="layui-input">
+          </div>
+
+          <div class="layui-inline">
+            <button class="layui-btn layuiadmin-btn-admin layui-btn-normal" style="background-color:#0080C0;" id="search">
+              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="layui-card-body">
+            <table class="layui-table" id="userTable"  lay-filter="myTable"></table>
+      </div>
+    </div>
+  </div>
+
+ <script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+ <script src="__PUBLIC__/layui/layui.all.js"></script>
+ <script src="__PUBLIC__/js/vds.js"></script>
+<script>
+ window.onload=function(){
+	 var table=layui.table;
+	  table.render({
+	    elem: '#userTable'
+	    ,url:'/index.php/Table/getTableData'
+	    //,even:true
+	    ,height:"full-220"
+		,limit:10
+	    ,limits:[10,20,50,100]
+	    ,id:'userTable'
+	    ,where:{tableName:"user",tableType:"user"}
+	    ,cols: [[
+		   {type:'numbers',title: '序号'}
+	   	  ,{field:'u_username',title: '用户名'}
+	      ,{field:'u_realname',title: '姓名'}
+	      ,{field:'u_department',title: '部门'}
+	      ,{field:'u_duty',title: '职位1'}
+	      ,{field:'u_duty2',title: '职位2'}
+	      ,{field:'u_phone',title: '手机'}
+	   	  ,{field:'u_email',title: '邮箱'}
+		  ,{field:'u_remark',title: '备注'}
+		  ,{field:'u_station',title: '爆料分组'}
+		  ,{field:'u_ifbaoliaoaudit',title: '爆料审核',templet:function(item){
+   	    	  if(item.u_ifbaoliaoaudit==1){
+   	    		  return "是";
+   	    	  }else if(item.u_ifbaoliaoaudit==0){
+   	    		  return "否";
+   	    	  }else if(item.u_ifbaoliaoaudit==null){
+   	    		  return "否";
+   	    	  }
+   	      }}
+	   	  ,{field:'u_ifuse',title: '是否使用',templet:function(item){
+   	    	  if(item.u_ifuse==1){
+   	    		  return "是";
+   	    	  }else if(item.u_ifuse==0){
+   	    		  return "否";
+   	    	  }
+   	      }}
+	      ,{field:'action', title: 'option',width:300,align:'center', toolbar: '#tableBar'}
+	    ]]
+	    ,page: true
+	    ,done: function(res, curr, count){
+	      }
+	  });
+	
+	//用户工具条响应事件
+	layui.table.on('tool(myTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+		  var data = obj.data; //获得当前行数据
+		  var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+		  var tr = obj.tr; //获得当前行 tr 的DOM对象
+		  var id=data.u_id;
+		  if(layEvent=="edit"){
+			  layer.open({
+				    type: 2,
+				    anim:2,
+				    title:"用户编辑",
+				    content: '/index.php/RBAC/rbac_edit_user_layer?id='+id,
+				    area:screen() < 2 ? ['60%', '60%'] : ['600px', '785px'],
+				    maxmin: true, 		
+				    end: function(){
+				    	//刷新userTable
+	     				layui.table.reload("userTable");
+				    }
+				});
+		  }else if(layEvent=="delete"){
+		    	 layer.confirm('确认删除?', {icon: 3, title:'提示'}, function(index){
+					  $.ajax({
+				            async: false,
+				            type: "GET",
+				            url:'/index.php/RBAC/rbac_del_user_handler?id='+id,
+				            dataType: "json",
+				            success: function(msg){
+				            		layer.msg(msg.info);
+				            		if(msg.status==1){
+				            			//刷新userTable
+				            			layui.table.reload("userTable");
+				            		}
+				              },
+				            error: function(){
+				            	layer.msg("error");
+				            }
+				        });
+					  layer.close(index);
+					});
+		  }else if(layEvent=="menu"){
+			  layer.open({
+				    type: 2,
+				    anim:2,
+				    title:"菜单权限",
+				    maxmin: true,
+				    content: '/index.php/RBAC/rbac_user_menu_layer?id='+id,
+				    area:screen() < 2 ? ['60%', '60%'] : ['600px', '785px'],
+				});
+		  }
+	});
+	
+	//新增user页
+	$("#add").click(function(){
+		layer.open({
+	          title:'用户添加'
+	          ,type:2
+	          ,content: '/index.php/RBAC/rbac_add_user_layer'
+	          ,shadeClose: false
+	          ,area:screen() < 2 ? ['60%', '60%'] : ['600px', '785px']
+	          ,maxmin: true
+	          ,cancel: function(index, layero){ 
+	        	  layui.table.reload("userTable");
+	        	 }    
+	        });
+	});
+
+	//搜索按钮
+	$("#search").click(function(){
+		 var keyword=$("#keyword").val();
+		 layui.table.reload("userTable",{where:
+		  	{keyword:keyword}
+		  });
+	});
+	
+ }
+</script>
+<script type="text/html" id="tableBar">
+<div>
+   <button class="layui-btn layui-btn-sm" data-type="edit" style="margin:10;background-color:#0080C0;" title="编辑" lay-event="edit">
+    <i class="layui-icon">&#xe642;</i>
+  </button>
+
+  <button class="layui-btn layui-btn-sm" style="margin:10;background-color:#FF0000;" title="删除" lay-event="delete">
+    <i class="layui-icon">&#xe640;</i>
+    </button>
+  <button class="layui-btn layui-btn-sm" style="margin:10;" title="菜单权限" lay-event="menu">
+    <i class="layui-icon layui-icon-auz"></i>
+   </button>
+</div>
+</script>
+</body>
+</html>
+

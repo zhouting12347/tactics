@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Uploading</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+</head>
+<body>
+
+  <div class="layui-fluid">
+	<div class="layui-card">
+      <div class="layui-card-body">
+             {$table}
+       </div>
+    </div>
+  </div>
+
+ <script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+ <script src="__PUBLIC__/layui/layui.all.js"></script>
+<script>
+function screen() {
+    //获取当前窗口的宽度
+    var width = $(window).width();
+    if (width > 1200) {
+        return 3;   //大屏幕
+    } else if (width > 992) {
+        return 2;   //中屏幕
+    } else if (width > 768) {
+        return 1;   //小屏幕
+    } else {
+        return 0;   //超小屏幕
+    }
+}
+function videoLayer(id){
+	layer.open({
+        title:'Video'
+        ,type: 2
+        ,content: '/index.php/Clips/clips_video_layer?id='+id
+        ,shadeClose: true
+        ,area:screen() < 2 ? ['60%', '60%'] : ['960px', '540px']
+        ,maxmin: true
+      });
+}
+</script>
+
+</body>
+</html>
+

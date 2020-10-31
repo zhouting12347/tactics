@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Order info</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+  <style>
+    .layui-form-radio{
+      margin:0;
+      width:125px;
+    }
+    #Payment .layui-form-radio{
+      margin:0;
+      width:145px;
+    }
+    .layui-form-label{
+      color:#7C7C7C;
+    }
+    input:disabled{
+    border:none;
+    font-size:20px;
+    background-color:#F5F5F5;
+    opacity:1;
+    cursor:default;
+    }
+    #Llink input:disabled{
+    color:#0080C0;
+    cursor:pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="layui-fluid">
+    <div class="layui-col-md12">
+      <div class="layui-card" style="width:1050px;margin:0 auto;">
+        <div class="layui-card-header" style="font-size:18px;background-color:#0088CA;color:white;">Custormer Details</div>
+        <div class="layui-card-body">
+          <form class="layui-form" action="" lay-filter="component-form-group">
+            <div class="layui-form-item">
+              <label class="layui-form-label" style="width:120px;">Customer ID</label>
+              <div class="layui-input-block">
+                <input type="text" name="CI" lay-verify="CI" autocomplete="off" placeholder="" class="layui-input" style="width:839px;" disabled value="{$customer.C_ID}">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                <label class="layui-form-label" style="width:120px;">Contact person</label>
+                <div class="layui-input-inline">
+                  <input type="tel" name="CP" lay-verify="CP" autocomplete="off" class="layui-input" disabled value="{$customer.C_Contact}">
+                </div>
+              </div>
+              <div class="layui-inline">
+                <label class="layui-form-label">Mobile</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="Mobile" lay-verify="Mobile" autocomplete="off" class="layui-input" disabled value="{$customer.C_Mobile}">
+                </div>
+              </div>
+              <div class="layui-inline">
+                <label class="layui-form-label">Email</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="Email" lay-verify="Email" autocomplete="off" class="layui-input" disabled value="{$customer.C_Email}">
+                </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label" style="width:120px;">Company</label>
+              <div class="layui-input-block">
+                <input type="text" name="Comapny" lay-verify="Company" autocomplete="off" placeholder="" class="layui-input" style="width:839px;" disabled value="{$customerCompany.C_CompanyName}">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label" style="width:120px;">Address</label>
+              <div class="layui-input-block">
+                <input type="text" name="Address" lay-verify="Address" autocomplete="off" placeholder="" class="layui-input" style="width:839px;" disabled value="{$customerCompany.C_Address}">
+              </div>
+            </div>
+<!--             <div class="layui-row" style="padding-top:2px;border-top:1px solid #E6E6E6;font-size:12px;color:#BEBEBE;">
+              *if unknown Custormer ID, please fill custormer's detail information
+            </div> -->
+          </form>
+        </div><!-- layui-card-body -->
+      </div><!-- layui-card -->
+
+      <div class="layui-card" style="width:1050px;margin:10px auto 0;">
+        <div class="layui-card-header" style="font-size:18px;background-color:#0088CA;color:white;">Ordering Details</div>
+        <div class="layui-card-body">
+          <form class="layui-form" action="" lay-filter="component-form-group">
+            <div class="layui-row" style="margin-bottom:15px;padding:5px;border-bottom:1px solid #E6E6E6;font-size:18px;color:#0080C0;">
+              Video
+            </div>
+            
+            <!-- video 信息 -->
+            <volist name="video" id="vo">
+	            <div class="layui-form-item">
+	              <label class="layui-form-label" style="width:150px;">File name</label>
+	              <div id="Llink" class="layui-input-block" data-type="videos">
+	                <input type="text" name="Filename" lay-verify="Filename" autocomplete="off" placeholder="" class="layui-input" style="width:809px;" disabled value="{$vo.C_Title}">
+	              </div>
+	            </div>
+	            <div class="layui-form-item">
+	              <div class="layui-inline">
+	                <label class="layui-form-label" style="width:150px;">video duration(sec)</label>
+	                <div class="layui-input-inline">
+	                  <input type="tel" name="CP" lay-verify="CP" autocomplete="off" class="layui-input" disabled value="{$vo.C_Length}">
+	                </div>
+	              </div>
+	              <div class="layui-inline">
+	                <label class="layui-form-label" style="width:150px;">unit(1unit=15sec)</label>
+	                <div class="layui-input-inline">
+	                  <input type="text" name="Mobile" lay-verify="Mobile" autocomplete="off" class="layui-input" disabled value="{$vo.unit}">
+	                </div>
+	              </div>
+	            </div>
+            </volist>
+            <!--end video 信息 -->
+            
+            <div class="layui-row" style="margin-bottom:15px;padding:5px;border-bottom:1px solid #E6E6E6;font-size:18px;color:#0080C0;">
+              Play mode and date
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                <label class="layui-form-label" style="width:120px;">Mode</label>
+                <div class="layui-input-inline">
+                  <input type="tel" name="Mode" lay-verify="Mode" autocomplete="off" class="layui-input" disabled value="{$order.mode}">
+                </div>
+              </div>
+              <div class="layui-inline">
+                <label class="layui-form-label">Date range</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="Mobile" lay-verify="Mobile" autocomplete="off"  style="width:250px;" class="layui-input" disabled value="{$order.dateRange}">
+                </div>
+              </div>
+              <div class="layui-inline">
+                <label class="layui-form-label">Time</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="Email" lay-verify="Email" autocomplete="off" class="layui-input" disabled value="{$order.time}">
+                </div>
+              </div>
+            </div>
+            <div class="layui-row" style="margin-bottom:15px;padding:5px;border-bottom:1px solid #E6E6E6;font-size:18px;color:#0080C0;">
+              Play site
+            </div>
+            <div class="layui-form-item">
+              <table class="layui-table">
+                <thead>
+                  <tr>
+                    <th>Player ID</th>
+                    <th>Address</th>
+                    <th>Premises</th>
+                    <th>Area</th>
+                    <th>Rotation</th>
+                    <th>On hour or hour+half </th>
+                    <th>Scheduled</th>
+                    <th>Special</th>
+                  </tr>
+                </thead>
+                <tbody>
+                <volist name="player" id="vo">
+                <!--   <tr>
+                    <td class="TBlayer" data-type="Info" style="cursor:pointer;color:#0080FF">A001</td>
+                    <td>9F, 218 Hengfeng Road</td>
+                    <td>Office</td>
+                    <td>Jin'an</td>
+                    <td>10,000</td>
+                    <td>15,000</td>
+                    <td>8,000</td>
+                    <td>5,000</td>
+                  </tr> -->
+                    <tr>
+                    <td>{$vo.P_ID}</td>
+                    <td>{$vo.P_Location}</td>
+                    <td>{$vo.premises}</td>
+                    <td>{$vo.area}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </volist>
+                </tbody>
+              </table>
+            </div>
+            <div class="layui-row" style="margin-bottom:15px;padding:5px;border-bottom:1px solid #E6E6E6;font-size:18px;color:#0080C0;">
+              Order amount
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label" style="width:120px;">Total</label>
+              <div class="layui-input-block">
+                <input type="text" name="Comapny" lay-verify="Comapny" autocomplete="off" placeholder="" class="layui-input" style="width:839px;" disabled value="{$order.O_Value}"> 
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label" style="width:120px;">After discount</label>
+              <div class="layui-input-block">
+                <input type="text" name="Comapny" lay-verify="Comapny" autocomplete="off" placeholder="" class="layui-input" style="width:839px;" disabled>
+              </div>
+            </div>
+            <div class="layui-row" style="margin-bottom:15px;padding:5px;border-bottom:1px solid #E6E6E6;font-size:18px;color:#0080C0;" disabled>
+              Payment
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                <label class="layui-form-label" style="width:120px;">Payment</label>
+                <div class="layui-input-inline">
+                  <input type="tel" name="Payment" lay-verify="Payment" autocomplete="off" class="layui-input" disabled value="{$order.O_Payment}">
+                </div>
+              </div>
+              <div class="layui-inline">
+                <label class="layui-form-label" style="width:120px;">Partial(how many)</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="Mobile" lay-verify="Mobile" autocomplete="off" class="layui-input" disabled>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div><!-- layui-card-body -->
+      </div><!-- layui-card -->
+
+      <div class="layui-card" style="width:1050px;margin:10px auto 20px;">
+        <div class="layui-card-header" style="font-size:18px;background-color:#0088CA;color:white;">Salesman Details</div>
+        <div class="layui-card-body">
+          <form class="layui-form" action="" lay-filter="component-form-group">
+            <div class="layui-form-item">
+              <label class="layui-form-label" style="width:120px;">Customer ID</label>
+              <div class="layui-input-block">
+                <input type="text" name="CID" lay-verify="CID" autocomplete="off" placeholder="" class="layui-input" style="width:839px;" disabled value="{$salesman.U_ID}">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                <label class="layui-form-label" style="width:120px;">Salesman</label>
+                <div class="layui-input-inline">
+                  <input type="tel" name="Salesman" lay-verify="Salesman" autocomplete="off" class="layui-input" disabled value="{$salesman.U_Username}">
+                </div>
+              </div>
+              <div class="layui-inline">
+                <label class="layui-form-label">Mobile</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="Mobile" lay-verify="Mobile" autocomplete="off" class="layui-input" disabled value="{$salesman.U_Phone}">
+                </div>
+              </div>
+              <div class="layui-inline">
+                <label class="layui-form-label">Email</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="Email" lay-verify="Email" autocomplete="off" class="layui-input" disabled value="{$salesman.U_Email}">
+                </div>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label" style="width:120px;">Agent</label>
+              <div class="layui-input-block">
+                <input type="text" name="Agent" lay-verify="Agent" autocomplete="off" placeholder="" class="layui-input" style="width:839px;" disabled>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label" style="width:120px;">Address</label>
+              <div class="layui-input-block">
+                <input type="text" name="Address" lay-verify="Address" autocomplete="off" placeholder="" class="layui-input" style="width:839px;" disabled value="{$salesmanCompany.C_CompanyName}">
+              </div>
+            </div>
+          </form>
+        </div><!-- layui-card-body -->
+      </div><!-- layui-card -->
+
+      <!-- <div class="layui-card" style="width:1050px;margin:10px auto 20px;">
+        <div class="layui-card-body" style="background-color:#6A7CC4;color:white;">
+          <form class="layui-form" action="" lay-filter="component-form-group">
+            <div class="layui-inline">
+              <label class="layui-form-label" style="width:120px;">Signature</label>
+              <div class="layui-input-inline" style="width:362px;">
+                <input type="text" name="Signature" lay-verify="Signature" autocomplete="off" class="layui-input" disabled>
+              </div>
+            </div>
+            <div class="layui-inline">
+              <label class="layui-form-label">Date</label>
+              <div class="layui-input-inline" style="width:362px;">
+                <input type="text" name="Date" lay-verify="Date" autocomplete="off" class="layui-input" disabled>
+              </div>
+            </div>
+          </form>
+        </div> --><!-- layui-card-body -->
+      <!-- </div> --><!-- layui-card -->
+    </div><!-- layui-col-md12 -->
+
+    <!-- <div class="layui-form-item layui-layout-admin" style="margin-bottom:0;">
+      <div class="layui-input-block">
+        <div class="layui-footer" style="left: 0;">
+          <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">Submit</button>
+        </div>
+      </div>
+    </div> -->
+  </div><!-- layui-fluid -->
+
+  <script src="../../../layuiadmin/layui/layui.js"></script>
+  <script>
+  layui.config({
+    base: '../../../layuiadmin/' //静态资源所在路径
+  }).extend({
+    index: 'lib/index' //主入口模块
+  }).use(['index','form','laydate'], function(){
+    var $ = layui.$
+    ,admin = layui.admin
+    ,element = layui.element
+    ,layer = layui.layer
+    ,laydate = layui.laydate
+    ,form = layui.form;
+
+    /* 触发弹层 */
+    var active = {
+      videos:function(){
+        layer.open({
+          title:'UPLOAD'
+          ,type: 2
+          ,content:'Avideo.html'
+          ,shadeClose: true
+          ,area: admin.screen() < 2 ? ['60%', '60%'] : ['1000px', '600px']
+          ,maxmin: true
+        });
+      }
+      ,Info:function(){
+        layer.open({
+          title:'Clip Info'
+          ,type: 2
+          ,content:'Avideo.html'
+          ,shadeClose: true
+          ,area: admin.screen() < 2 ? ['60%', '60%'] : ['1000px', '600px']
+          ,maxmin: true
+        });
+      }
+    };
+
+    $('#Llink').on('click', function(){
+      var type = $(this).data('type');
+      active[type] && active[type].call(this);
+    });
+    $('.TBlayer').on('click', function(){
+      var type = $(this).data('type');
+      active[type] && active[type].call(this);
+    });
+  });
+  </script>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+<style type="text/css">
+body{
+	padding:0px;
+
+}
+.layui-upload-img{
+	width:190px;
+	height:120px;
+}
+</style>
+</head>
+<body class="layui-layout-body" >
+<div class="layui-fluid" style="margin-bottom: 20px;">
+    <ul class="layui-nav" lay-filter="">
+        <li class="layui-nav-item layui-this"><a href="">排期</a></li>      
+        <li class="layui-nav-item"><a href="">查询</a></li>
+      </ul>
+</div>
+<div class="layui-fluid">
+	<div class="layui-col-sm4" style="padding-right: 20px;">
+        <form class="layui-form layui-form-pane" action="" id="form1">
+            <div class="layui-form-item">
+              <label class="layui-form-label">排期描述</label>
+              <div class="layui-input-block">
+                <input type="text" name="s_describe" placeholder="请填写排期描述" autocomplete="off" class="layui-input">
+              </div>
+            </div>
+
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">类型</label>
+                <div class="layui-input-block">
+                  <input type="radio" name="s_type" value="period" title="周期" checked>
+                  <input type="radio" name="s_type" value="temp" title="临时" >
+                </div>
+            </div>
+            <div class="period">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">开始日期</label>
+                    <div class="layui-input-block">
+                    <input type="text" autocomplete="off" name="s_startDate" id="startDate" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">结束日期</label>
+                    <div class="layui-input-block">
+                    <input type="text" autocomplete="off" name="s_endDate" id="endDate" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">周期</label>
+                    <div class="layui-input-block">
+                    <input type="checkbox" name="week[]" value="星期一" title="星期一">
+                    <input type="checkbox" name="week[]" value="星期二" title="星期二">
+                    <input type="checkbox" name="week[]" value="星期三" title="星期三">
+                    <input type="checkbox" name="week[]" value="星期四" title="星期四">
+                    <input type="checkbox" name="week[]" value="星期五" title="星期五">
+                    <input type="checkbox" name="week[]" value="星期六" title="星期六">
+                    <input type="checkbox" name="week[]" value="星期日" title="星期日">
+                    </div>
+                </div>
+            </div><!--End period-->
+            <div class="temp" style="display: none;">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">临时日期</label>
+                    <div class="layui-input-block">
+                    <input type="text" autocomplete="off" name="s_tempDate" id="tempDate" class="layui-input">
+                    </div>
+                </div>
+            </div><!--End temp-->
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">开始时间</label>
+                <div class="layui-input-block">
+                <input type="text" autocomplete="off" name="s_startTime" id="startTime" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">结束时间</label>
+                <div class="layui-input-block">
+                <input type="text" autocomplete="off" name="s_endTime" id="endTime" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">节目名称</label>
+                <div class="layui-input-block">
+                  <input type="text" name="s_programName" placeholder="请填写节目名称" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+            
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="submit">生成</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+            <input type="hidden" name="s_status" value="n" />
+        </form>
+    </div>
+    <div class="layui-col-sm8">
+        <div class="layui-fluid">
+            <div class="layui-card-body">
+                <table class="layui-table" id="scheduleTable"  lay-filter="myTable"></table>
+              </div>
+        </div>
+    </div>
+  
+</div>
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<script src="__PUBLIC__/layui/layui.all.meeting.js"></script>
+<script>
+var type="period";
+window.onload=function(){
+    //开始日期
+    layui.laydate.render({
+      elem: '#startDate',
+      type:'date'
+    });
+
+     //结束日期
+     layui.laydate.render({
+      elem: '#endDate',
+      type:'date'
+    });
+
+    //临时日期
+    layui.laydate.render({
+      elem: '#tempDate',
+      type:'date'
+    });
+
+    //开始时间
+    layui.laydate.render({
+      elem: '#startTime',
+      type:'time'
+    });
+
+     //结束时间
+     layui.laydate.render({
+      elem: '#endTime',
+      type:'time'
+    });
+
+     //策略表
+	var table=layui.table;
+	  table.render({
+	    elem: '#scheduleTable'
+	    ,url:'/index.php/Table/getTableData'
+	    //,even:true
+	    ,height:"full-150"
+		,limit:10
+	    ,limits:[20,30,50,100]
+	    ,id:'scheduleTable'
+	    ,where:{tableName:"schedule",tableType:"schedule"}
+	    ,cols: [[
+			   {type: 'numbers', title: '序号'}
+			   ,{field:'s_describe',title: '描述'}
+			   ,{field:'s_channelName',title: '频道'}
+			   ,{field:'s_programName',title: '节目名称'}
+			   ,{field:'start',title: '开始时间',width:160}
+			  ,{field:'end',title: '结束时间',width:160,}
+			  ,{field: 's_type', title: '类型',templet:function(item){
+				  	if(item.s_type=='period'){
+				  		return "周期";
+				  	}else{
+				  		return "临时";
+				  	}
+				  }
+			  }
+	          ,{field:'s_week',title: '周期'}
+	    	  ,{field:'action', title: '操作',width:160,align:'center',fixed: 'right',toolbar: '#tableBar'}
+	    ]]
+	    ,page: true
+	    ,done: function(res, curr, count){
+	      }
+	  });
+
+    layui.form.on('radio', function(data){
+        if(data.value=="period"){
+            $(".period").show(500,"swing");
+            $(".temp").hide();
+            type="period";
+        }else if(data.value=="temp"){
+            $(".period").hide();
+            $(".temp").show(500,"swing");
+            type="temp";
+        }
+        //layui.element.render();
+    });
+
+     //监听单元格事件
+	  table.on('tool(myTable)', function(obj){
+		var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+	    var data = obj.data;
+	    var s_id=data.s_id;
+	    if(layEvent === 'delete'){	
+	    	 layer.confirm('确认删除？',{icon: 3, title:'提示'},function(index){
+				  $.ajax({
+			            type: "POST",
+			            url:'/index.php/Tactics/tactics_del_handler?s_id='+s_id,
+			            dataType: "json",
+			            success: function(msg){
+			            	layer.msg(msg.info);
+			            	layui.table.reload("scheduleTable");
+			            },
+			            error: function(){
+			            	layer.msg("发送错误");
+			            }
+			        });
+				  layer.close(index);
+				});
+	    
+	    	
+	    }else if(layEvent === 'createList'){
+            layer.confirm('是否生成详细列表？',{icon: 3, title:'提示'},function(index){
+				  $.ajax({
+			            type: "POST",
+			            url:'/index.php/Tactics/tactics_create_list?s_id='+s_id,
+			            dataType: "json",
+			            success: function(msg){
+			            	layer.msg(msg.info);
+			            	layui.table.reload("scheduleTable");
+			            },
+			            error: function(){
+			            	layer.msg("发送错误");
+			            }
+			        });
+				  layer.close(index);
+				});
+	    }else if(layEvent === 'submit'){
+			layer.confirm('确认发送？',{icon: 3, title:'提示'},function(index){
+				  $.ajax({
+			            type: "POST",
+			            url:'/index.php/Ab/ab1_submit?ab_id='+ab_id,
+			            dataType: "json",
+			            success: function(msg){
+			            	layer.msg(msg.info);
+			            	layui.table.reload("scheduleTable");
+			            },
+			            error: function(){
+			            	layer.msg(msg.info);
+			            }
+			        });
+				  layer.close(index);
+				});
+	    
+		}
+
+      });
+      
+    //策略提交
+   layui.form.on('submit(submit)', function(data){
+    //var formdata=JSON.stringify(data.field);
+    $.ajax({
+            type: "POST",
+            url:'/index.php/Tactics/tactics_add_handler',
+            data:$("#form1").serialize(),
+            dataType:"json",
+            success: function(msg){
+                    layer.msg(msg.info);
+                    if(msg.status==1){
+                        layui.table.reload("scheduleTable");
+                        //document.getElementById("form1").reset();
+                    }
+            },
+            error:function(){
+                layer.msg("error");
+            }
+        });
+     return false; 
+  });
+}
+</script>
+
+<script type="text/html" id="tableBar">
+    <div>
+        <button class="layui-btn layui-btn-sm" style="margin:10;background-color:#FF0000;" title="删除"  lay-event="delete">
+            <i class="layui-icon">&#xe640;</i>
+        </button>
+    
+        {{#  if(d.s_type=="period"&&d.s_status==0){ }}
+        <button class="layui-btn layui-btn-sm" style="margin:10;background-color:#00B000;" title="生成详情表"  lay-event="createList">
+        <i class="layui-icon">&#xe605;</i>
+        </button>
+        {{#  } }}
+
+        {{#  if(d.s_type=="period"&&d.s_status==1){ }}
+        <button class="layui-btn layui-btn-sm" style="margin:10;background-color:#1E9FFF;" title="详情列表"  lay-event="createList">
+        <i class="layui-icon">&#xe60a;</i>
+        </button>
+        {{#  } }}
+
+    </div>
+    </script>
+</body>
+</html>

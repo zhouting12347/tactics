@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>供稿人待办</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+</head>
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-card-body" style="padding:15px;border-bottom:1px solid #f6f6f6;">
+        <div>
+          <button class="layui-btn layui-btn-lg" data-type="Add" style="background-color:#00B000;"  id="add">
+            新建稿件
+          </button>
+        </div>
+      </div>
+
+      <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+        <div class="layui-form-item">
+          <div class="layui-inline">
+            <input type="text" name="loginname" placeholder="搜索..." autocomplete="off" class="layui-input">
+          </div>
+          <div class="layui-inline" style="margin:0 5px 0 10px;">
+          类型
+          </div>
+          <div class="layui-inline">
+            <select name="" lay-verify="">
+              <option value=""></option>
+            </select>
+          </div>
+          <div class="layui-inline" style="margin:0 5px 0 10px;">
+          日期范围
+          </div>
+          <div class="layui-inline">
+            <div class="layui-input-inline">
+              <input type="text" class="layui-input" id="CreateTime" placeholder="请选择日期范围">
+            </div>
+          </div>
+          <div class="layui-inline">
+            <button class="layui-btn layuiadmin-btn-admin layui-btn-normal" style="background-color:#0080C0;">
+              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+        
+      <div class="layui-card-body">
+            <table class="layui-table">
+              <thead>
+                <tr>
+                  <th>序号</th>
+                  <th>标题</th>
+                  <th>作者</th>
+                  <th>创建日期</th>
+                  <th>状态</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>10号线二期工程上跨6号线桥梁</td>
+                  <td>王五</td>
+                  <td>2019-05-23</td>
+                  <td>已完成</td>
+                  <td style="width:168px">
+                    <div class="">
+                      <button class="layui-btn layui-btn-sm" style="margin:0;background-color:#DD006F;" title="查看">
+                        <i class="layui-icon">&#xe615;</i>
+                      </button>
+                      <button class="layui-btn layui-btn-sm" data-type="edit" style="margin:0;background-color:#0080C0;" title="编辑">
+                        <i class="layui-icon">&#xe642;</i>
+                      </button>
+                      <button class="layui-btn layui-btn-sm" style="margin:0;background-color:#FF0000;" title="删除">
+                        <i class="layui-icon">&#xe640;</i>
+                      </button>
+                      <button class="layui-btn layui-btn-sm" style="margin:0;background-color:#00B000;" title="提交">
+                        <i class="layui-icon">&#xe605;</i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+    </div>
+  </div>
+
+ <script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+ <script src="__PUBLIC__/layui/layui.all.js"></script>
+  <script src="__PUBLIC__/js/vds.js"></script>
+<script>
+window.onload=function(){
+    //日期范围
+    layui.laydate.render({
+      elem: '#CreateTime'
+      ,range:true
+    });
+    
+    //新建页面
+	$("#add").click(function(){
+		layer.open({
+	          title:'新建稿件类型'
+	          ,type: 2
+	          ,content: '/index.php/Sucai/sucai_provide_type_layer'
+	          ,shadeClose: false
+	          ,area:screen() < 2 ? ['60%', '60%'] : ['1500px', '850px']
+	          ,cancel: function(index, layero){ 
+	        	  layui.table.reload("documentTable");
+	        	 }    
+	        });
+	});
+    
+}
+</script>
+</body>
+</html>
+

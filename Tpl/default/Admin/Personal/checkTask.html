@@ -1,0 +1,71 @@
+<include file="Public/header" />
+<link rel="stylesheet" href="__PUBLIC__/css/chosen.css" />
+<style>
+	tr{height:50px;}		
+</style>		
+<body style="background-color:white;padding:15px;font-size:16px">
+	<table width="100%" border="0" cellpadding="2" cellspacing="0">
+		<tr>
+			<td colspan="3"><label>案件名称：</label><input type="text" style="width:690px" disabled="disabled" value="{$playlist.P_CaseName}" ></td>
+		</tr>
+		<tr>
+			<td><label>主审法官：</label><input type="text" style="width:185px" disabled="disabled" value="{$playlist.P_JudgeName}" ></td>
+			<td><label>原告：</label><input type="text" style="width:185px" disabled="disabled" value="{$playlist.P_YMan}" ></td>
+			<td><label>被告：</label><input type="text" style="width:185px" disabled="disabled" value="{$playlist.P_BMan}" ></td>
+		</tr>
+		<tr>
+			<td colspan="3"><label>案件描述：</label><textarea class="form-control" id="form-field-8" rows="5" disabled="disabled" >{$playlist.P_CaseDetail}</textarea></td>
+		</tr>
+	</table>
+	<br>
+	<div class="page-header">
+		<h1>直播资源详情</h1>
+	</div><!-- /.page-header -->
+	<table width="100%" border="0" cellpadding="2" cellspacing="0">
+		<tr>
+			<td colspan="3"><label>开始时间：</label><input type="text" style="width:300px" disabled="disabled" value="{$playlist.P_StartTime}" ></td>
+			<td colspan="3"><label>结束时间：</label><input type="text" style="width:300px" disabled="disabled" value="{$playlist.P_EndTime}" ></td>
+		</tr>
+		<tr>
+			<td colspan="6"><label style="color:rgb(130,175,111);">入流信息：</label></td>
+		</tr>
+		<tr>
+			<td colspan="3"><label>所属法庭：</label><input type="text" style="width:185px" disabled="disabled" value="{$in.CR_Name}"></td>
+			<td colspan="3"><label>所属法院：</label><input type="text" style="width:185px" disabled="disabled" value="{$in.C_Name}"></td>
+		</tr>
+		<tr>
+			<td colspan="3"><label>入流地址：</label><input type="text" style="width:185px" disabled="disabled" value="{$in.CR_URL}"></td>
+			<td colspan="3"><label>入流端口：</label><input type="text" style="width:185px" disabled="disabled" value="{$in.CR_Port}"></td>
+		</tr>
+		<tr>
+			<td colspan="6"><label style="color:orange;">出流信息：</label></td>
+		</tr>
+		<tr>
+			<td colspan="2"><label>出流地址：</label><input type="text" style="width:185px" disabled="disabled" value="{$out.L_URL}"></td>
+			<td colspan="2"><label>出流端口：</label><input type="text" style="width:185px" disabled="disabled" value="{$out.L_Port}"></td>
+			<td colspan="2"><label>所属法院：</label><input type="text" style="width:185px" disabled="disabled" value="{$out.C_Name}"></td>
+		</tr>
+		<tr>
+			<td colspan="2"><label>申请法院：</label><input type="text" style="width:185px" disabled="disabled" value="{$user.C_Name}"></td>
+			<td colspan="2"><label>申 请 人 ：</label><input type="text" style="width:185px" disabled="disabled" value="{$user.M_RealName}"></td>
+			<td colspan="2"><label>申请时间：</label><input type="text" style="width:185px" disabled="disabled" value="{$playlist.P_RequestTime}"></td>
+		</tr>
+		<tr align="center" style="height:90px">
+			<td colspan="2"></td>
+			<td colspan="2"><button class="btn btn-info" type="button"><i class="ace-icon fa fa-times bigger-110"></i>关闭</button></td>
+			<td colspan="2"></td>
+		</tr>
+	</table>
+</body>
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<script src="__PUBLIC__/js/chosen.jquery.min.js"></script>
+<script src="__PUBLIC__/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript">
+	jQuery(function($){
+		$("button[class='btn btn-info']").click(function(){
+			var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+			parent.layer.close(index); //再执行关闭     
+		});
+	});
+</script>
+</html>

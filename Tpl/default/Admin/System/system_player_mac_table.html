@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>ClipType</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+</head>
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-card-body" style="padding:15px;border-bottom:1px solid #f6f6f6;">
+        <div>
+          <button class="layui-btn layui-btn-lg" data-type="Add" id="add" style="background-color:#00B000;">
+            <i class="layui-icon">&#xe61f;</i>Add
+          </button>
+        </div>
+      </div>
+
+      <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+        
+           <div class="layui-inline" style="margin:0 5px 0 10px;">
+            Company
+            </div>
+              <div class="layui-inline">
+              	<select name="company" lay-verify="" id="company" >
+	              <option value="">Select</option>
+	              <volist name="company" id="vo">
+	              	<option value="{$vo.C_ID}">{$vo.C_CompanyName}</option>
+	              </volist>
+	            </select>
+              </div>
+
+          <div class="layui-inline">
+            <button class="layui-btn layuiadmin-btn-admin layui-btn-normal" style="background-color:#0080C0;" id="search">
+              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+            </button>
+          </div>
+      </div>
+      <div class="layui-card-body">
+            <table class="layui-table" id="playermacTable"  lay-filter="myTable"></table>
+      </div>
+    </div>
+  </div>
+
+ <script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+ <script src="__PUBLIC__/layui/layui.all.js"></script>
+ <script src="__PUBLIC__/js/vds.js"></script>
+<script>
+ window.onload=function(){
+	 var table=layui.table;
+	  table.render({
+	    elem: '#playermacTable'
+	    ,url:'/index.php/Table/getTableData'
+	    ,even:true
+	    ,height:"full-220"
+		,limit:10
+	    ,limits:[10,20,50,100]
+	    ,id:'playermacTable'
+	    ,where:{tableName:"playermac",tableType:"playermac"}
+	    ,cols: [[
+	   	   {field:'C_CompanyName',title: 'Company'}
+	      ,{field:'PM_PID',title: 'ID'}
+	   	  ,{field:'PM_Mac',title: 'Mac'}
+	   	  ,{field:'PM_Model',title: 'Model'}
+	   	  ,{field:'PM_ActiveTime',title: 'Active time'}
+	      ,{field:'PM_IfUse',title: 'IfUse',templet:function(item){
+   	    	  if(item.PM_IfUse==0){
+   	    		  return "No";
+   	    	  }else if(item.PM_IfUse==1){
+   	    		  return "Yes";
+   	    	  }
+   	      }}
+	      ,{field:'action', title: 'action',width:190,align:'center', toolbar: '#tableBar'}
+	    ]]
+	    ,page: true
+	    ,done: function(res, curr, count){
+	      }
+	  });
+	
+	//用户工具条响应事件
+	layui.table.on('tool(myTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+		  var data = obj.data; //获得当前行数据
+		  var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+		  var tr = obj.tr; //获得当前行 tr 的DOM对象
+		  var id=data.PM_ID;
+		  var ifUse=data.PM_IfUse;
+		  if(layEvent=="edit"){
+			  layer.open({
+				    type: 2,
+				    anim:2,
+				    title:"Change",
+				    content: '/index.php/System/system_edit_player_mac_layer?id='+id,
+				    area:screen() < 2 ? ['60%', '60%'] : ['600px', '360px'],
+				    maxmin: true,
+				    end: function(){
+				    	//刷新playermacTable
+	     				layui.table.reload("playermacTable");
+				    }
+				});
+		  }else if(layEvent=="delete"){
+		    	 layer.confirm('confirm delete?', {icon: 3, title:'tip',btn: ['confirm', 'cancel']}, function(index){
+					  $.ajax({
+				            async: false,
+				            type: "GET",
+				            url:'/index.php/System/system_del_player_mac_handler?id='+id+"&ifUse="+ifUse,
+				            dataType: "json",
+				            success: function(msg){
+				            		layer.msg(msg.info);
+				            		if(msg.status==1){
+				            			//刷新playermacTable
+				            			layui.table.reload("playermacTable");
+				            		}
+				              },
+				            error: function(){
+				            	layer.msg("error");
+				            }
+				        });
+					  layer.close(index);
+					});
+		  }
+	});
+	
+	//新增company页
+	$("#add").click(function(){
+		layer.open({
+	          title:'Add'
+	          ,type:2
+	          ,content: '/index.php/System/system_add_player_mac_layer'
+	          ,shadeClose: false
+	          ,area:screen() < 2 ? ['60%', '60%'] : ['600px', '360px']
+	          ,maxmin: true
+	          ,cancel: function(index, layero){ 
+	        	  layui.table.reload("playermacTable");
+	        	 }    
+	        });
+	});
+
+	//搜索按钮
+	$("#search").click(function(){
+		 var company=$("#company").val();
+		 layui.table.reload("playermacTable",{where:
+		  	{company:company}
+		  });
+	});
+	
+ }
+</script>
+<script type="text/html" id="tableBar">
+<div class="layui-btn-group">
+    <button class="layui-btn layui-btn-sm" data-type="edit" style="background-color:#0080C0;" title="Change" lay-event="edit">
+    <i class="layui-icon">&#xe642;</i>
+</button>
+
+<button class="layui-btn layui-btn-sm" style="background-color:#FF0000;" title="Delete" lay-event="delete">
+    <i class="layui-icon">&#xe640;</i>
+    </button>
+</div>
+</script>
+</body>
+</html>
+

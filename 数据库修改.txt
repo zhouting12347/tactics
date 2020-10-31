@@ -1,0 +1,4 @@
+t_document 增加d_relatedWeibo 字段 varchar 50
+t_weibo 增加w_ifRelate 字段 int 11
+
+新增t_menu、t_user_menu表

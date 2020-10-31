@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Editing</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+  <style type="text/css">
+        tbody .layui-table-cell {
+            height: auto;
+            line-height: 40px;
+        }
+		.layui-card-body{overflow-y: scroll;}
+    </style>
+</head>
+<body>
+
+  <!-- <div class="layui-fluid" style="width:2400px;"> -->
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+        <div class="layui-form-item">
+          <div class="layui-inline">
+            <input type="text" id="keyword" placeholder="Keyword" autocomplete="off" class="layui-input">
+          </div>
+          
+          <div class="layui-inline" style="margin:0 5px 0 10px;">
+          Workflow
+          </div>
+          <div class="layui-inline">
+            <select id="status" lay-verify="">
+              <option value="">Select</option>
+              <option value="1">Editing</option>
+              <option value="2">Auditing</option>
+              <option value="3">Audited</option>
+              <option value="4">Audit failed </option>
+            </select>
+          </div>
+          
+          <div class="layui-inline" style="margin:0 5px 0 10px;">
+          Date range
+          </div>
+          <div class="layui-inline">
+            <div class="layui-input-inline">
+              <input type="text" class="layui-input" id="DateRange" placeholder="Select">
+            </div>
+          </div>
+          
+          <div class="layui-inline" style="margin:0 5px 0 10px;">
+          Play Type
+          </div>
+          <div class="layui-inline">
+            <select id="playtype" lay-verify="">
+               <option value="">Select</option>
+              <option value="0">Rotation</option>
+              <option value="1">On hour</option>
+              <option value="2">On half hour</option>
+              <option value="3">On hour+half</option>
+              <option value="4">Scheduled</option>
+              <option value="5">Specific point</option>
+            </select>
+          </div>
+          
+          <div class="layui-inline" style="margin:0 5px 0 10px;">
+          Payment
+          </div>
+          <div class="layui-inline">
+            <select id="payment" lay-verify="">
+                  <option>Select</option>
+                  <option value="0">non-payment</option>
+                  <option value="1">payment received</option>
+                  <option value="2">partial payment</option>
+            </select>
+          </div>
+          <div class="layui-inline">
+            <button class="layui-btn layuiadmin-btn-admin layui-btn-normal" style="background-color:#0080C0;" id="search">
+              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="layui-card-body">
+           <table class="layui-table" id="orderTable"  lay-filter="myTable"></table>
+          </div>
+    </div>
+  </div>
+
+ <script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+ <script src="__PUBLIC__/layui/layui.all.js"></script>
+ <script src="__PUBLIC__/js/vds.js"></script>
+<script>
+window.onload=function(){
+	//日期范围
+	layui.laydate.render({
+	  elem: '#DateRange'
+	  ,range:true
+	  ,lang: 'en'
+	});
+	
+	var table=layui.table;
+	 table.render({
+	    elem: '#orderTable'
+	    ,url:'/index.php/Table/getTableData'
+	    ,even:true
+	    ,height:"full-150"
+	    ,cellMinWidth:120
+		,limit:10
+	    ,limits:[10,20,50,100]
+	    ,id:'orderTable'
+	    ,where:{tableName:"order",tableType:"queryorder"}
+	    ,cols: [[
+	           {field:'O_Status',title: 'Status',templet:function(item){
+			    	  if(item.O_Status==1){
+			    		  return "Editing";
+			    	  }else if(item.O_Status==2){
+			    		  return "Auditing";
+			    	  }else if(item.O_Status==3){
+			    		  return "Audited";
+			    	  }else if(item.O_Status==4){
+			    		  return "Audit failed";
+			    	  }
+			   }}
+	          ,{field:'O_Contract',title: 'Contract'}
+	   	      ,{field:'O_StartDate',width:110,title: 'Start date'}
+	   	      ,{field:'O_EndDate',width:110,title: 'End date'}
+	   	      ,{field:'O_Days',title: 'Days'}
+	   	 	  ,{field:'O_PlayType',title: 'Play type',templet:function(item){
+	   	 	  if(item.O_PlayType==0){
+   	    		  return "Rotation";
+   	    	  }else if(item.O_PlayType==1){
+   	    		  return "On hour";
+   	    	  }else if(item.O_PlayType==2){
+   	    		  return "On half hour";
+   	    	  }else if(item.O_PlayType==3){
+   	    		  return "On hour+half";
+   	    	  }else if(item.O_PlayType==4){
+   	    		  return "Scheduled";
+   	    	  }else if(item.O_PlayType==5){
+   	    		  return "Specific point";
+   	    	  }
+	   	      }}
+	   	      ,{field:'timing',title:'Fixed time'}
+	   	      ,{title: 'Clips info',event: 'clipinfo',width:100,templet:function(item){
+		    	  if(item.clipinfo!=1){
+		    		  return "<button class='layui-btn layui-btn-primary layui-btn-sm'>clipinfo</button>";
+		    	  }
+		      }}
+	   	      ,{field:'O_Clips',title: 'Clips'}
+	   	      ,{field:'O_TotalLength',title: 'Total duration'}
+	   	      ,{title: 'Players info',event:'playerinfo',width:120,templet:function(item){
+		    	  if(item.playinfo!=1){
+		    		  return "<button class='layui-btn layui-btn-primary layui-btn-sm'>playerinfo</button>";
+		    	  }
+		      }}
+	   	 	  ,{field:'O_Players',title: 'Players'}
+	   		  ,{field:'O_Value',title: 'Value'}
+	   		  ,{field:'O_Payment',title: 'Payment',templet:function(item){
+	   			 if(item.O_Payment==0){
+		    		  return "non-payment";
+		    	  }else if(item.O_Payment==1){
+		    		  return "payment received";
+		    	  }else if(item.O_Payment==2){
+		    		  return "partial payment";
+		    	  }
+	   		  }}
+	   		  ,{field:'U_Username',title: 'Salesman'}
+	   	      ,{field:'C_Contact',title: 'Customers'}
+	   	  	  ,{field:'O_Creater',title: 'Creater'}
+	   	  	  ,{field:'O_CreateTime',title: 'Create time'}
+	   	      ,{field:'O_Auditor',title: 'Auditor'}
+	   	  	  ,{field:'O_AuditTime',title: 'Audit time'}
+	   	  	  ,{field:'O_AuditRemark',title: 'Audit remark'}
+	    ]]
+	    ,page: true
+	    ,done: function(res, curr, count){
+	    }
+	  });
+	
+	  //监听单元格事件
+	  table.on('tool(myTable)', function(obj){
+		var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+	    var data = obj.data;
+	    var O_ID=data.O_ID;
+	    if(layEvent=="delete"){
+	    	 layer.confirm('confirm delete?', {icon: 3, title:'tip',btn: ['confirm', 'cancel']}, function(index){
+				  $.ajax({
+			            async: false,
+			            type: "GET",
+			            url:'/index.php/Order/order_del_audited_order_handler?O_ID='+O_ID,
+			            dataType: "json",
+			            success: function(msg){
+			            		layer.msg(msg.info);
+			            		if(msg.status==1){
+			            			//刷新orderTable
+			            			layui.table.reload("orderTable");
+			            		}
+			              },
+			            error: function(){
+			            	layer.msg("error");
+			            }
+			        });
+				  layer.close(index);
+				});
+	  }else if(layEvent === 'clipinfo'){
+	    	layer.open({
+		          title:'Clips info'
+		          ,type: 2
+		          ,content: '/index.php/Order/order_clips_info_layer?O_ID='+O_ID
+		          ,shadeClose: false
+		          ,area:screen() < 2 ? ['60%', '60%'] : ['1400px', '800px']
+		          ,maxmin: true  
+		        });
+	    }else if(layEvent === 'playerinfo'){
+	    	layer.open({
+		          title:'Player info'
+		          ,type: 2
+		          ,content: '/index.php/Order/order_player_info_layer?O_ID='+O_ID
+		          ,shadeClose: false
+		          ,area:screen() < 2 ? ['60%', '60%'] : ['1400px', '800px']
+		          ,maxmin: true  
+		        });
+	    }
+	      
+	  });
+	
+	
+	$("#search").click(function(){
+		var keyword=$("#keyword").val();
+		var playtype=$("#playtype").val();
+		var payment=$("#payment").val();
+		var dateRange=$("#DateRange").val();
+		var status=$("#status").val();
+		 layui.table.reload("orderTable",{where:
+		  	{keyword:keyword,playtype:playtype,payment:payment,dateRange:dateRange,status:status}
+		  });
+	});
+}
+
+</script>
+<script type="text/html" id="tableBar">
+<div class="layui-btn-group">
+ 	<button class="layui-btn layui-btn-sm" style="background-color:#FF0000;" title="Delete" lay-event="delete">
+		<i class="layui-icon">&#xe640;</i>
+	</button>
+</div>
+</script>
+</body>
+</html>
+

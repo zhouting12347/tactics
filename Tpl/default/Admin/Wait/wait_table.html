@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>供稿人待办</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+  <style type="text/css">
+		body{overflow-y: scroll;}
+  </style>
+</head>
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+        <div class="layui-form-item">
+          <div class="layui-inline">
+            <input type="text" id="keyword" placeholder="搜索..." autocomplete="off" class="layui-input">
+          </div>
+          <div class="layui-inline" style="margin:0 5px 0 10px;">
+          类型
+          </div>
+          <div class="layui-inline">
+            <select id="classify" >
+              <option value=""></option>
+              <option value="直播稿">直播稿</option>
+              <option value="微博">微博</option>
+              <option value="统发稿">统发稿</option>
+              <option value="其他">其他</option>
+            </select>
+          </div>
+          <div class="layui-inline" style="margin:0 5px 0 10px;">
+          日期范围
+          </div>
+          <div class="layui-inline">
+            <div class="layui-input-inline">
+              <input type="text" class="layui-input" id="createtime" placeholder="请选择日期范围">
+            </div>
+          </div>
+          <div class="layui-inline">
+            <button class="layui-btn layuiadmin-btn-admin layui-btn-normal" style="background-color:#0080C0;" id="search">
+              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+        
+       <!-- <div class="layui-card-body layui-card-header">
+       	<button type="button" class="layui-btn layui-btn-radius" style="background-color:#DD006F;">素材库</button>
+        <button type="button" class="layui-btn layui-btn-radius">直播稿</button>
+        <button type="button" class="layui-btn layui-btn-radius" style="background-color:#FB7D00;">微博</button>
+        <button type="button" class="layui-btn layui-btn-radius" style="background-color:#0072A8;">统发稿</button>
+        <button type="button" class="layui-btn layui-btn-radius layui-btn-primary">其他</button>
+      </div> -->
+        
+      <div class="layui-card-body">
+         <table class="layui-table" id="waitTable"  lay-filter="myTable"></table>
+       </div>
+
+    </div>
+  </div>
+
+ <script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+ <script src="__PUBLIC__/layui/layui.all.js"></script>
+  <script src="__PUBLIC__/js/vds.js"></script>
+<script>
+window.onload=function(){
+    //日期范围
+    layui.laydate.render({
+      elem: '#createtime'
+      ,range:true
+    });
+    
+    //媒体库table，只看见自己创建的稿件
+	var table=layui.table;
+	  table.render({
+	    elem: '#waitTable'
+	    ,url:'/index.php/Table/getTableData'
+	    //,even:true
+	    ,height:"full-135"
+		,limit:20
+	    ,limits:[20,30,50,100]
+	    ,id:'waitTable'
+	    ,where:{tableName:"document",tableType:"wait"}
+	    ,cols: [[
+			   {type: 'numbers', title: '序号'}
+	          ,{field:'d_title',title: '标题'}
+	          ,{field:'d_classify',title: '分类'}
+	          ,{field:'d_author',title: '作者'}
+	   	      ,{field:'d_createTime',title: '创建日期'}
+		   	  ,{field:'menu',title:'当前环节'}
+	   	      ,{field:'d_mediaAuditReason',title:'责编意见'}
+	   	      ,{field:'d_copyrightAuditReason',title:'版权意见'}
+	   	      ,{field:'d_leaderAuditReason',title:'领导意见'}
+	   	  	  ,{field:'d_failedReason',title:'退回意见'}
+	    	  ,{field:'action', title: '操作',width:300,align:'center',fixed: 'right',toolbar: '#tableBar'}
+	    ]]
+	    ,page: true
+	    ,done: function(res, curr, count){
+	      }
+	  });
+	  
+	  //监听单元格事件
+	  table.on('tool(myTable)', function(obj){
+		var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+	    var data = obj.data;
+	    var d_id=data.d_id;
+	 	var status=data.d_status;
+	 	var classify=data.d_classify;
+	 	var content;
+	    if(layEvent === 'edit'){
+	    	switch(classify){
+	    		case "直播稿":
+	    			content='/index.php/Document/document_edit_live_layer?d_id='+d_id;
+	    			break;
+	    		case "微博":
+	    			content='/index.php/Document/document_edit_weibo_layer?d_id='+d_id;
+	    			break;
+	    		case "统发稿":
+	    			content='/index.php/Document/document_edit_tongfa_layer?d_id='+d_id;
+	    			break;
+	    		case "其他":
+	    			content='/index.php/Document/document_edit_other_layer?d_id='+d_id;
+	    			break;
+			}
+	    	switch(status){
+	    		case "1":
+	    			content=content+"&currentStatus=createDocument";
+	    			break;
+	    		case "2":
+	    			content=content+"&currentStatus=mediaAudit";
+	    			break; 
+	    		case "3":
+	    			content=content+"&currentStatus=copyrightAudit";
+	    			break;
+	    		case "4":
+	    			content=content+"&currentStatus=leaderAudit";
+	    			break;
+				case "6":
+	    			content=content+"&currentStatus=editAudit";
+	    			break;
+				case "-1":
+				content=content+"&currentStatus=backDocument";
+	    			break;
+	    	}
+	    	layer.open({
+		          title:'编辑稿件'
+		          ,type: 2
+		          ,content:content
+		          ,shadeClose: false
+		          ,area:screen() < 2 ? ['60%', '60%'] : ['1500px', '850px']
+		          ,cancel: function(index, layero){ 
+		        	  layui.table.reload("waitTable");
+		        	 }    
+		        });
+	    }else if(layEvent === 'check'){
+	    	layer.open({
+		          title:'查看稿件'
+		          ,type: 2
+		          ,content: '/index.php/Document/document_check_layer?d_id='+d_id
+		          ,shadeClose: false
+		          ,area:screen() < 2 ? ['60%', '60%'] : ['1500px', '850px']
+		        });
+	    }
+	  });
+	  
+		//搜索按钮
+		$("#search").click(function(){
+			 var keyword=$("#keyword").val();
+			 var createtime=$("#createtime").val();
+			 var classify=$("#classify").val();
+			 layui.table.reload("waitTable",{
+				 where:{
+					keyword:keyword,createtime:createtime,classify:classify
+				}
+			    ,page: {
+		    	   curr: 1  ////重新从第 1 页开始
+		    	}
+			  });
+		});
+    
+}
+</script>
+<script type="text/html" id="tableBar">
+<div>
+    <button class="layui-btn layui-btn-sm" data-type="edit" style="margin:10;background-color:#0080C0;" title="编辑"  lay-event="edit">
+      <i class="layui-icon">&#xe642;</i>
+   </button>
+</div>
+</script>
+</body>
+</html>
+

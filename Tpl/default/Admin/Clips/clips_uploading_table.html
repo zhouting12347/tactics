@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Uploading</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+ <style type="text/css">
+	tbody .layui-table-cell{
+	height:90px;
+	line-height: 90px;
+	}
+</style>
+</head>
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-card-body" style="padding:15px;border-bottom:1px solid #f6f6f6;">
+        <div>
+          <button class="layui-btn layui-btn-lg" data-type="upload" style="background-color:#00B000;" id="upload">
+            <i class="layui-icon">&#xe681;</i>Add
+          </button>
+        </div>
+      </div>
+
+      <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+        <div class="layui-form-item">
+          <div class="layui-inline">
+            <input type="text" id="keyword" placeholder="Keyword" autocomplete="off" class="layui-input">
+          </div>
+          <div class="layui-inline" style="margin:0 5px 0 10px;">
+          Video type
+          </div>
+          <div class="layui-inline">
+            <select id="selecttype" lay-verify="">
+              <option value="">Select</option>
+              <volist name="cliptype" id="vo">
+              	<option value="{$vo.CT_ID}">{$vo.CT_Name}</option>
+              </volist>
+            </select>
+          </div>
+          <div class="layui-inline" style="margin:0 5px 0 10px;">
+          Create time
+          </div>
+          <div class="layui-inline">
+            <div class="layui-input-inline">
+              <input type="text" class="layui-input" id="createtime" placeholder="Select">
+            </div>
+          </div>
+          
+          <div class="layui-inline">
+            <button class="layui-btn layuiadmin-btn-admin layui-btn-normal" style="background-color:#0080C0;" id="search" >
+              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="layui-card-body">
+             <table class="layui-table" id="clipsTable"  lay-filter="myTable"></table>
+       </div>
+
+    </div>
+  </div>
+
+ <script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+ <script src="__PUBLIC__/layui/layui.all.js"></script>
+ <script src="__PUBLIC__/js/vds.js"></script>
+<script>
+window.onload=function(){
+	var table=layui.table;
+	  table.render({
+	    elem: '#clipsTable'
+	    ,url:'/index.php/Table/getTableData'
+	    ,even:true
+	    ,height:"full-220"
+		,limit:10
+	    ,limits:[10,20,50,100]
+	    ,id:'clipsTable'
+	    ,where:{tableName:"clips",tableType:"clips_upload"}
+	    ,cols: [[
+	       {field:'C_Thumbnail',title: 'Thumbnail',templet:"#C_Thumbnail",width:160}
+	      ,{field:'C_Title',title: 'Name'}
+	      ,{field:'C_Duration',title: 'Duration',sort:true,width:110}
+	      ,{field:'C_Format',title: 'Format',width:80}
+	      ,{field:'C_Width',title: 'Width',width:80}
+	      ,{field:'C_Height',title: 'Height',width:80}
+	      ,{field:'C_Size',title: 'Size(MB)',width:90}
+	      ,{field:'CT_Name',title: 'Video type',width:100}
+	      ,{field:'C_IfDP',title: 'Blank filled',sort:true,templet:function(item){
+   	    	  if(item.C_IfDP==0){
+   	    		  return "no";
+   	    	  }else if(item.C_IfDP==1){
+   	    		  return "yes";
+   	    	  }
+   	      }}
+	      ,{field:'C_CreateTime',title: 'Create time'}
+	      ,{field:'C_Creator',title: 'Creator',width:80}
+	      ,{field:'C_AuditTime',title: 'Verify Time'}
+	      ,{field:'C_Auditor',title: 'Auditor',width:80}
+	      ,{field:'C_AuditRemark',title: 'Comments',templet:"#auditRemark"}
+	      ,{field:'action', title: 'action',width:140,align:'center',fixed: 'right', toolbar: '#tableBar'}
+	    ]]
+	    ,page: true
+	    ,done: function(res, curr, count){
+	      }
+	  });
+	
+	//用户工具条响应事件
+	layui.table.on('tool(myTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+		  var data = obj.data; //获得当前行数据
+		  var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+		  var tr = obj.tr; //获得当前行 tr 的DOM对象
+		  var id=data.C_ID;
+		  
+		  if(layEvent=="edit"){
+			  layer.open({
+				    type: 2,
+				    anim:2,
+				    title:"Change",
+				    content: '/index.php/Clips/clips_edit_layer?id='+id,
+				    area:screen() < 2 ? ['60%', '60%'] : ['600px', '410px'],
+				    maxmin: true,
+				    end: function(){
+				    	//刷新clipsTable
+	     				layui.table.reload("clipsTable");
+				    }
+				});
+		  }else if(layEvent=="delete"){
+		    	 layer.confirm('confirm delete?', {icon: 3, title:'tip',btn: ['confirm', 'cancel']}, function(index){
+					  $.ajax({
+				            async: false,
+				            type: "GET",
+				            url:'/index.php/Clips/clips_del_clip_handler?id='+id,
+				            dataType: "json",
+				            success: function(msg){
+				            		layer.msg(msg.info);
+				            		if(msg.status==1){
+				            			//刷新clipsTable
+				            			layui.table.reload("clipsTable");
+				            		}
+				              },
+				            error: function(){
+				            	layer.msg("error");
+				            }
+				        });
+					  layer.close(index);
+					});
+		  }else if(layEvent=="done"){
+		    	 layer.confirm('confirm submit?', {icon: 3, title:'tip',btn: ['confirm', 'cancel']}, function(index){
+					  $.ajax({
+				            async: false,
+				            type: "GET",
+				            url:'/index.php/Clips/clips_submit_auditing_handler?id='+id,
+				            dataType: "json",
+				            success: function(msg){
+				            		layer.msg(msg.info);
+				            		if(msg.status==1){
+				            			//刷新clipsTable
+				            			layui.table.reload("clipsTable");
+				            		}
+				              },
+				            error: function(){
+				            	layer.msg("error");
+				            }
+				        });
+					  layer.close(index);
+					});
+		  }
+	});
+	
+	//日期范围
+	layui.laydate.render({
+	  elem: '#createtime'
+	  ,range:true
+	  ,lang: 'en'
+	});
+
+	//上传页
+	$("#upload").click(function(){
+		layer.open({
+	          title:'Upload'
+	          ,type: 2
+	          ,content: '/index.php/Clips/clips_upload_layer'
+	          ,shadeClose: false
+	          ,area:screen() < 2 ? ['60%', '60%'] : ['600px', '570px']
+	          ,maxmin: true
+	          ,cancel: function(index, layero){ 
+	        	  layui.table.reload("clipsTable");
+	        	 }    
+	        });
+	});
+
+	//搜索按钮
+	$("#search").click(function(){
+		 var keyword=$("#keyword").val();
+		 var selecttype=$("#selecttype").val();
+		 var createtime=$("#createtime").val();
+		 layui.table.reload("clipsTable",{where:
+		  	{keyword:keyword,selecttype:selecttype,createtime:createtime}
+		  });
+	});
+	
+}
+
+</script>
+<script type="text/html" id="tableBar">
+<div class="layui-btn-group">
+  <button class="layui-btn layui-btn-sm" style="background-color:#0080C0;" title="Change" lay-event="edit">
+  	<i class="layui-icon">&#xe642;</i>
+  </button>
+  <button class="layui-btn layui-btn-sm" style="background-color:#FF0000;" title="Delete" lay-event="delete">
+ 	 <i class="layui-icon">&#xe640;</i>
+  </button>
+  <button class="layui-btn layui-btn-sm" style="background-color:#00B000;" title="Submit" lay-event="done">
+  	 <i class="layui-icon">&#xe605;</i>
+   </button>
+</div>
+</script>
+<script type="text/html" id="C_Thumbnail">
+<video src="" poster="{{d.imgurl}}" width="100%" height="100%"></video>
+<i class="layui-icon layui-icon-play" style="position:absolute;left:60px;color:#B6B6B6;font-size:40px;cursor:pointer" id="{{d.C_ID}}" onclick="videoLayer(this)"></i>
+</script>
+<script type="text/html" id="auditRemark">
+  {{#  if(d.C_Status === '4'){ }}
+    <span style="color: #F581B1;">{{d.C_AuditRemark}}</span>
+  {{#  } }}
+</script>
+</body>
+</html>
+

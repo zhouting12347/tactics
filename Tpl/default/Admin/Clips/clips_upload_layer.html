@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>UpLayer</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/css/admin.css" media="all">
+</head>
+<body>
+  <div class="layui-fluid">
+    <div class="layui-col-md12">
+      <div class="layui-card layui-col-md12">
+        <div class="layui-card-body layui-col-md12" style="padding-bottom:0;">
+          <div class="layui-upload-drag layui-col-md12" id="upload-drag" style="width:100%;">
+            <i class="layui-icon"></i>
+            <p>Select or drag the file</p>
+          </div>
+        </div>
+        
+        <div class="layui-card-body layui-col-md12" style="padding-top:0;">
+          <div class="layui-progress layui-progress-big" lay-showpercent="true"  lay-filter="progressBar">
+            <div class="layui-progress-bar" lay-percent="0%"></div>
+          </div>
+        </div>
+
+        <div class="layui-card-body layui-col-md12">
+          <form class="layui-form" action="" lay-filter="component-form-group">
+            <div class="layui-form-item">
+              <label class="layui-form-label">Name</label>
+              <div class="layui-input-block">
+                <input type="text" name="title" id="title" autocomplete="off" class="layui-input">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">Video type</label>
+              <div class="layui-input-block">
+                <select name="" id="selecttype" lay-verify="">
+                  <option value="">Select</option>
+                  <volist name="cliptype" id="vo" >
+                  	 <option value="{$vo.CT_ID}">{$vo.CT_Name}</option>
+                  </volist>
+                </select>
+              </div>
+            </div>
+            
+            <div class="layui-form-item">
+		    <label class="layui-form-label">Blank filled</label>
+		    <div class="layui-input-block">
+		      <input type="radio" name="C_IfDP" value="1" title="Yes">
+		      <input type="radio" name="C_IfDP" value="0" title="No" checked>
+		    </div>
+		  </div>
+            
+            <div class="layui-form-item layui-form-text" style="margin-bottom:0;">
+              <label class="layui-form-label">Remark</label>
+              <div class="layui-input-block">
+                <textarea id="remark" placeholder="" class="layui-textarea"></textarea>
+              </div>
+            </div>
+            <div class="layui-form-item layui-layout-admin" style="margin-bottom:0;">
+              <div class="layui-input-block">
+                <div class="layui-footer" style="left: 0;">
+                  <button type="button" class="layui-btn" lay-submit="" id="upload">Upload</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+      </div><!-- layui-card -->
+    </div>
+  </div><!-- layui-fluid -->
+  
+<script src="__PUBLIC__/layui/jquery-3.3.1.min.js"></script>
+<script src="__PUBLIC__/js/jquery.cookie.js"></script>
+<script src="__PUBLIC__/layui/layui.all.js"></script>
+<script>
+window.onload=function(){
+	 upload = layui.upload;
+	 element = layui.element;
+     element.init();
+     
+	//选完文件后不自动上传
+	upload.render({
+	    elem: '#upload-drag'
+	    ,url: '/index.php/Admin/Clips/clips_upload_handler'
+	    ,auto: false
+	    //,multiple: true
+	    ,bindAction: '#upload'
+	    ,exts:"mov|mp4"
+	    ,progress: function(e , percent){
+			//console.log("进度：" + percent + '%');
+			element.progress('progressBar',percent  + '%');
+		 }
+		,before:function(){
+			var title=$("#title").val();
+			var selecttype=$("#selecttype").val();
+			var remark=$("#remark").val();
+			if(!title){
+				layer.msg("Please fill in the title");
+				return false;
+			}
+			if(!selecttype){
+				layer.msg("Please select type");
+				return false;
+			}
+			var ifDP=$("input[name='C_IfDP']:checked").val();
+			//保存参数
+			$.ajax({
+	            async: false,
+	            type: "GET",
+	            url:'/index.php/Clips/ajaxSaveClipsInfo?title='+title+"&remark="+remark+"&typeID="+selecttype+"&ifDP="+ifDP,
+	            dataType: "json",
+	        });
+			
+			
+		}
+		,choose:function(obj){
+			 obj.preview(function(index, file, result){
+				$("#title").val(file.name);
+			 });
+		}
+	    ,done: function(res){
+		      parent.layer.msg(res.msg);	
+		      if(res.code==0){
+			  	//parent.layui.table.reload("clipsTable");
+			  	window.location.reload();
+			  }
+	     	 //console.log(res);
+	    }
+   });
+    
+  
+}
+
+  </script>
+</body>
+</html>

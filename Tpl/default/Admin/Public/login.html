@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+	<head>
+		<meta charset="utf-8">
+        <title>VDS Login</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="__PUBLIC__/login/css/reset.css">
+        <link rel="stylesheet" href="__PUBLIC__/login/css/supersized.css">
+        <link rel="stylesheet" href="__PUBLIC__/login/css/style.css">
+	</head>
+	<body oncontextmenu="return false">
+		<div class="page-container">
+            <div class="connect">
+            	<p><img src="__PUBLIC__/login/img/Logo.png" alt=""></p>
+            </div>
+            <form action="" method="post" id="form1">
+				<div>
+					<input type="text" name="u_username" class="username" placeholder="用户名" autocomplete="off"/>
+				</div>
+                <div>
+					<input type="password" name="u_password" class="password" placeholder="密码" oncontextmenu="return false" onpaste="return false"/>
+                </div>
+                <button id="submit" type="submit">登录</button>
+            </form>
+        </div>
+		<div class="alert" style="display:none">
+			<h2 style="background-color:#FF0000;">错误</h2>
+			<div class="alert_con">
+				<p id="ts" style="padding-top:20px;line-height:30px"></p>
+				<p style="padding-top:10px;line-height:60px"><a class="btn">确认</a></p>
+			</div>
+		</div>
+
+        <!-- Javascript -->
+		<script src="__PUBLIC__/login/js/1.6.4-jquery.min.js"></script>
+        <script src="__PUBLIC__/login/js/supersized.3.2.7.min.js"></script>
+        <script src="__PUBLIC__/login/js/supersized-init.js"></script>
+         <script src="__PUBLIC__/layui/layui.all.js"></script>
+		<script>
+		$(".btn").click(function(){
+			is_hide();
+		})
+		var u = $("input[name=u_username]");
+		var p = $("input[name=u_password]");
+		$("#submit").live('click',function(){
+			if(u.val() == '' || p.val() =='')
+			{
+				$("#ts").html("请填写用户名密码");
+				is_show();
+				return false;
+			}
+			 $.ajax({
+		            async: false,
+		            type: "POST",
+		            url:'/index.php/Public/checkLogin',
+		            data:$("#form1").serialize(),
+		            dataType: "json",
+		            success: function(msg){
+		            		if(msg.status==1){
+		            			//页面跳转
+		            			window.location.href="__GROUP__/Index/index";
+		            		}
+		            		layer.msg(msg.info);
+		              },
+		            error: function(){
+		            	layer.msg("发生错误");
+		            }
+		        });
+		       return false; 
+			
+		});
+		window.onload = function()
+		{
+			if(window !=top){  
+				   top.location.href = location.href;  
+			 }  
+			$(".connect p").eq(0).animate({"left":"0%"}, 600);
+		}
+		function is_hide(){ $(".alert").animate({"top":"-40%"}, 300) }
+		function is_show(){ $(".alert").show().animate({"top":"36%"}, 300) }
+		</script>
+    </body>
+
+</html>
+
